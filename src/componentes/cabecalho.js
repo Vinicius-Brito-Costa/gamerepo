@@ -1,13 +1,37 @@
 import React from 'react';
 import Rotas from './rotas';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
-export default class Componente extends React.Component{
+import { procurarJogo, selecionarJogo } from './apiRAWG';
+import { connect } from 'react-redux';
+import { pesquisa } from './../actions/pesquisa';
+
+const mapDispatchToProps = () =>{
+    return {
+        pesquisa
+    }
+}
+const estados = (state) => {
+    return {
+        pesquisa_prop: state.pesquisa
+    }
+}
+
+class Componente extends React.Component{
     constructor(props){
         super(props);
+        
         this.state = {
-            posicaoScroll: window.pageYOffset
+            posicaoScroll: window.pageYOffset,
+            att: 0,
+            valorPesquisado: '',
+            jogosEncontrados: [],
+            isLoading: false,
+            previewId: 0,
+            previewNome: ''
         }
-
+        this.procurar = this.procurar.bind(this);
+        this.selecionar = this.selecionar.bind(this);
+        this.pesquisarAction = this.pesquisarAction.bind(this);
     }
     componentDidMount() {
         window.addEventListener('scroll', this.checarScroll)
@@ -33,6 +57,16 @@ export default class Componente extends React.Component{
             posicaoScroll: rolagem,
         })
     }
+    procurar(elemento){
+        procurarJogo(elemento.target.value, this);
+        this.setState({valorPesquisado: elemento.target.value});
+    }
+    pesquisarAction(){
+        this.props.pesquisa(this.state.valorPesquisado)
+    }
+    selecionar(jogo){
+        selecionarJogo(jogo, this);
+    }
     render(){
         return(
             <Router>
@@ -57,13 +91,23 @@ export default class Componente extends React.Component{
                                 <Link className="text-light nav-link cabecalho-links"as={Link} to='/bombando'>Bombando</Link>
                             </li>
                             <li className="nav-item ml-3">
-                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/lista'>Minha lista</Link>
+                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/lista'>Minha&nbsp;lista</Link>
                             </li>
                         </ul>
-                        <form className="form-inline my-2 my-lg-0" onSubmit="">
-                            <input className="form-control mr-sm-2 cabecalho-procura" type="search" placeholder="Procurar" aria-label="Search"/>
-                            <button className="btn btn-outline-secondary my-2 my-sm-0 cabecalho-procura-botao" type="submit">Procurar</button>
-                        </form>
+                        <div className="cabecalho-secao-pesquisa my-2 my-lg-0">
+                            <input type="hidden" name='id_jogo' />
+                            <input className="form-control  cabecalho-procura" id="cabecalho-barra-pesquisa" onChange={ this.procurar } placeholder="Nome do jogo" aria-label="Search"/>
+                            <Link as={Link} to="/pesquisa" onClick={() => this.pesquisarAction()} ><button className="btn cabecalho-procura-botao" id="cabecalho-submit">Procurar</button></Link>
+                            <div className="cabecalho-pesquisa-resultado">
+                            {this.state.jogosEncontrados.map((valor, index) => {
+                                if(valor){
+                                    return <button onClick={() => this.selecionar(valor)}  key={index} className=" btn cabecalho-pesquisa-item" style={{display: 'block'}}>{valor.name} <span className="cabecalho-pesquisa-add">+</span></button>
+                                }
+                                else{ return null }
+                            }
+                            )}
+                        </div>
+                        </div>
                     </div>
                 </nav>
                 <Rotas />
@@ -71,3 +115,5 @@ export default class Componente extends React.Component{
         );
     }
 }
+
+export default connect (estados, mapDispatchToProps())(Componente);

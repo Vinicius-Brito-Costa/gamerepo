@@ -3,21 +3,68 @@ import BannerPrincipal from './../componentes/banner_principal';
 import CardJogo from '../componentes/card_jogo';
 import Carousel from 'react-elastic-carousel';
 import { consts } from 'react-elastic-carousel';
+import { pegarJogos } from './../componentes/apiRAWG';
+import { connect } from 'react-redux';
 
-export default class PaginaInical extends React.Component{
+
+const estados = (state) => {
+    return {
+        id_usuario: state.id_usuario,
+        reload: state.front_page_reload
+    }
+}
+
+class PaginaInicial extends React.Component{
+    _estaMontado = false;
     constructor(props){
         super(props);
         this.state = {
+            jogos: [],
             setas: true,
-            banner_imagem: 'nier.jpg',
-            descricao: "Olá"
+            banner_imagem: '',
+            imagem_local: false,
+            nome_jogo: '',
+            descricao: ""
         }
         this.bannerPrincipal = this.bannerPrincipal.bind(this);
+        this.pegarJogosDoUsuario = this.pegarJogosDoUsuario.bind(this);
+        
+    }
+    componentDidMount(){
+        this._estaMontado = true;
+        if(this.props.reload && this.pegarJogosDoUsuario && this._estaMontado){
+            console.log("Ta carregando");
+            this.pegarJogosDoUsuario();
+        }
+    }
+    async pegarJogosDoUsuario(){
+        let dado = {
+            id_usuario: this.props.id_usuario
+        }
+        const cabecalho = {
+            method: "POST",
+            body: JSON.stringify(dado),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        let resposta = await fetch(`http://localhost:777`, cabecalho);
+        let dados = await resposta.json();
+        
+        let jogos = await pegarJogos(dados);
+        if(jogos[0]){
+            this.bannerPrincipal(jogos[0].background_image, false, jogos[0].description_raw, jogos[0].name);
+        }
+        this.setState({jogos: jogos});
+        setInterval(() => {this.setState({load: 1});}, 100)
+        
     }
 
-    bannerPrincipal(imagem, descricao){
+    bannerPrincipal(imagem, local, descricao, nome){
         this.setState({
+            nome_jogo: nome,
             banner_imagem: imagem,
+            imagem_local: local,
             descricao: descricao
         })
     }
@@ -37,29 +84,25 @@ export default class PaginaInical extends React.Component{
         const breakPoints = [
             {width: 1, itemsToShow: 1},
             {width: 668, itemsToShow: 2},
-            {width: 1000, itemsToShow: 3},
-            {width: 1300, itemsToShow: 4}
+            {width: 900, itemsToShow: 3},
+            {width: 1200, itemsToShow: 4}
         ]
-        
-        return(
+        return this.state.load >= 1 ? (
             <main className="container-fluid px-0 text-light">
-                <BannerPrincipal descricao={this.state.descricao} imagem={this.state.banner_imagem}/>
+                <BannerPrincipal nome={this.state.nome_jogo} descricao={this.state.descricao} imagem={this.state.banner_imagem} imagem_local={this.state.imagem_local}/>
                 <div className="paginas-inicio">
                     <h2>Minha Lista</h2>
-                    <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} onChange={(currentItemObject) => this.bannerPrincipal(currentItemObject.item.children.props.imagem, currentItemObject.item.children.props.descricao)} focusOnSelect={true}>
-                        <div onClick={() => this.bannerPrincipal('nier.jpg','')}><CardJogo id="" nome="Nier: Automata" categorias={["Futurista", "Distopia", "TPS", "JRPG"]} idade="18" imagem="nier.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('transistor.jpg', "")}><CardJogo id="" nome="TRANSISTOR" categorias={["Futurista", "Distopia", "Isometrico", "RPG"]} idade="18" imagem="transistor.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('re3r.jpg', "")}><CardJogo id="" nome="RESIDENT EVIL 3 REMAKE" categorias={["Terror", "Zumbi", "TPS"]} idade="18"  imagem="re3r.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('castlevania.jpg', "")}><CardJogo id="" nome="CASTLEVANIA SYMPHONY OF THE NIGHT" categorias={["Gotico", "2D", "Ação", "JRPG"]} idade="12"  imagem="castlevania.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('sekiro.jpg', "")}><CardJogo id="" nome="SEKIRO" categorias={["Oriental", "Ação", "Soulslike", "RPG"]} idade="18"  imagem="sekiro.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('tekken7.jpg', "")}><CardJogo id="" nome="TEKKEN 7" categorias={["1 vs 1", "Luta"]} idade="16"  imagem="tekken7.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('doom.jpg', "")}><CardJogo id="" nome="DOOM ETERNAL" categorias={["Futurista", "Distopia", "FPS", "Inferno"]} idade="18" imagem="doom.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('cyberpunk_1_4K.jpg', "")}><CardJogo id="" nome="CYBERPUNK 2077" categorias={["Futurista", "Distopia", "FPS", "RPG"]} idade="18"  imagem="cyberpunk_1_4K.jpg" descricao=""/></div>
-                        <div onClick={() => this.bannerPrincipal('sor.jpg', "")}><CardJogo id="" nome="STREETS OF RAGE" categorias={["Beat'em up", "2D", 'Clássicos']} idade="0"  imagem="sor.jpg" descricao=""/></div>
+                    <Carousel  breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} /*onChange={(currentItemObject) => this.bannerPrincipal(currentItemObject.item.children.props.imagem, false, currentItemObject.item.children.props.descricao)}*/ focusOnSelect={true}>
+                        
+                        {this.state.jogos.map((jogo, chave)=>
+                            <div onClick={() => this.bannerPrincipal(jogo.background_image, false, jogo.description, jogo.name)} key={chave}><CardJogo id={jogo.id} nome={jogo.name} categorias={jogo.genres} idade={jogo.esrb_rating != null ? jogo.esrb_rating.name : "none"} imagem={jogo.background_image} descricao={jogo.description}/></div>
+                        )}
+                        
                     </Carousel>
                 </div>
 
             </main>
-        );
+        ): (<div>LOADING</div>);
     }
 }
+export default connect(estados)(PaginaInicial);

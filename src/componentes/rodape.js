@@ -5,8 +5,8 @@ export default class Rodape extends React.Component{
         return(
             <>
                 <div className="rodape text-secondary pb-4">
-                <a href="https://github.com/Vinicius-Brito-Costa" target="_blank"><img className="rodape-midia-social" src={require('./../imagens/github.svg').default} alt="" /></a>
-                <a href="https://www.linkedin.com/in/vin%C3%ADcius-brito-costa-150b9b158/" target="_blank"><img className="rodape-midia-social ml-4" src={require('./../imagens/linkedin.svg').default} alt="" /></a>
+                <a href="https://github.com/Vinicius-Brito-Costa" target="_blank" rel="noreferrer"><img className="rodape-midia-social" src={require('./../imagens/github.svg').default} alt="" /></a>
+                <a href="https://www.linkedin.com/in/vin%C3%ADcius-brito-costa-150b9b158/" target="_blank" rel="noreferrer"><img className="rodape-midia-social ml-4" src={require('./../imagens/linkedin.svg').default} alt="" /></a>
 
                     <table>
                         <tbody>
