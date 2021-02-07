@@ -99,7 +99,7 @@ class BoxJogo extends React.Component{
         this.props.Load();
         this.setState({favorito: !this.state.favorito});*/
         console.log('cadastrou')
-        await fetch(url, cabecalho)
+        fetch(url, cabecalho)
         if(!this.props.frontReload){
             this.props.Load()
         }
@@ -119,7 +119,7 @@ class BoxJogo extends React.Component{
         };
         let url = 'https://rest-api-gameflix.herokuapp.com/removerJogoUsuario';
         console.log('removeu')
-        await fetch(url, cabecalho)
+        fetch(url, cabecalho)
         if(!this.props.frontReload){
             this.props.Load()
         }
