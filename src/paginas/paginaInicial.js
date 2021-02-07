@@ -75,7 +75,7 @@ class PaginaInicial extends React.Component{
             let recarregado = this.props.reload;
             console.log(recarregado)
             this.props.Loaded();
-            let resultado = await fetch('https://rest-api-gameflix.herokuapp.com/', cabecalho)
+            let resultado = await fetch('https://rest-api-gameflix.herokuapp.com', cabecalho)
             let json = await resultado.json();
             if(recarregado){
                 console.log('Sim')

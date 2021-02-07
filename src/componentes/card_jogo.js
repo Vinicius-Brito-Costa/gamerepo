@@ -99,14 +99,12 @@ class BoxJogo extends React.Component{
         this.props.Load();
         this.setState({favorito: !this.state.favorito});*/
         console.log('cadastrou')
-        let func = (async () => {
-            await fetch(url, cabecalho)
+        fetch(url, cabecalho)
+        .then(() => {
             if(!this.props.frontReload){
                 this.props.Load()
             }
         })
-        
-        if(this._estaMontado) func()
         this.setState({favorito: !this.state.favorito})
     }
     removerDoUsuario(){
@@ -123,14 +121,12 @@ class BoxJogo extends React.Component{
         };
         let url = 'https://rest-api-gameflix.herokuapp.com/removerJogoUsuario';
         console.log('removeu')
-        let func = (async () => {
-            await fetch(url, cabecalho)
+        fetch(url, cabecalho)
+        .then(() => {
             if(!this.props.frontReload){
                 this.props.Load()
             }
         })
-        
-        if(this._estaMontado) func()
         this.setState({favorito: !this.state.favorito})
     }
     
