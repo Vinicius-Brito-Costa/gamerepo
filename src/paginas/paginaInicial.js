@@ -1,16 +1,30 @@
-import React from 'react';
-import BannerPrincipal from './../componentes/banner_principal';
-import CardJogo from '../componentes/card_jogo';
-import Carousel from 'react-elastic-carousel';
+import React, { lazy, Suspense } from 'react';
 import { consts } from 'react-elastic-carousel';
-import { pegarJogos } from './../componentes/apiRAWG';
+import { pegarJogosEstado } from './../componentes/apiRAWG';
 import { connect } from 'react-redux';
+import { AtualizarListaJogos } from './../actions/usuario'
+import { Loaded, Load } from './../actions/paginaPrincipal'
+import Loading from './../componentes/placeholder/loading';
+import SemJogo from './../componentes/placeholder/usuarioSemJogo';
 
 
+const Carousel = lazy(() => import('react-elastic-carousel'));
+const BannerPrincipal = lazy(() => import('./../componentes/banner_principal'));
+const CardJogo = lazy(() => import('../componentes/card_jogo'));
+
+
+const mapDispatchToProps = () =>{
+    return {
+        AtualizarListaJogos,
+        Loaded,
+        Load
+    }
+}
 const estados = (state) => {
     return {
         id_usuario: state.id_usuario,
-        reload: state.front_page_reload
+        listJogosUsuario: state.listJogosUsuario,
+        reload: state.frontReload
     }
 }
 
@@ -21,10 +35,8 @@ class PaginaInicial extends React.Component{
         this.state = {
             jogos: [],
             setas: true,
-            banner_imagem: '',
-            imagem_local: false,
-            nome_jogo: '',
-            descricao: ""
+            jogo_banner: [],
+            isLoading: true
         }
         this.bannerPrincipal = this.bannerPrincipal.bind(this);
         this.pegarJogosDoUsuario = this.pegarJogosDoUsuario.bind(this);
@@ -32,10 +44,19 @@ class PaginaInicial extends React.Component{
     }
     componentDidMount(){
         this._estaMontado = true;
-        if(this.props.reload && this.pegarJogosDoUsuario && this._estaMontado){
-            console.log("Ta carregando");
+        if(this._estaMontado){
             this.pegarJogosDoUsuario();
         }
+    }
+    componentDidUpdate(prevProps){
+        let reload = this.props.reload
+        if(reload){
+            reload = false;
+            this.pegarJogosDoUsuario();
+        }
+    }
+    componentWillUnmount(){
+        this._estaMontado = false;
     }
     async pegarJogosDoUsuario(){
         let dado = {
@@ -48,24 +69,29 @@ class PaginaInicial extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let resposta = await fetch(`http://localhost:777`, cabecalho);
-        let dados = await resposta.json();
-        
-        let jogos = await pegarJogos(dados);
-        if(jogos[0]){
-            this.bannerPrincipal(jogos[0].background_image, false, jogos[0].description_raw, jogos[0].name);
-        }
-        this.setState({jogos: jogos});
-        setInterval(() => {this.setState({load: 1});}, 100)
-        
+        console.log(cabecalho.body);
+        let func = (async () => {
+            let recarregado = this.props.reload;
+            console.log(recarregado)
+            this.props.Loaded();
+            let resultado = await fetch('http://localhost:777', cabecalho)
+            let json = await resultado.json();
+            if(recarregado){
+                console.log('Sim')
+                await  pegarJogosEstado(json, this);
+            }
+            else{
+                console.log('Nao')
+                this.setState({jogos: this.props.listJogosUsuario, isLoading: false})
+                this.bannerPrincipal(this.state.jogos[0]);
+            }
+        })
+        await func();
     }
 
-    bannerPrincipal(imagem, local, descricao, nome){
+    bannerPrincipal(jogo){
         this.setState({
-            nome_jogo: nome,
-            banner_imagem: imagem,
-            imagem_local: local,
-            descricao: descricao
+            jogo_banner: jogo
         })
     }
     setas({ type, onClick, isEdge}){
@@ -87,22 +113,29 @@ class PaginaInicial extends React.Component{
             {width: 900, itemsToShow: 3},
             {width: 1200, itemsToShow: 4}
         ]
-        return this.state.load >= 1 ? (
+        return (this.state.isLoading ? <Loading/> :
+            this.state.jogos.length == 0 ? 
+            <div><SemJogo />{console.log(this.state.jogos)}</div>
+            : 
             <main className="container-fluid px-0 text-light">
-                <BannerPrincipal nome={this.state.nome_jogo} descricao={this.state.descricao} imagem={this.state.banner_imagem} imagem_local={this.state.imagem_local}/>
-                <div className="paginas-inicio">
-                    <h2>Minha Lista</h2>
-                    <Carousel  breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} /*onChange={(currentItemObject) => this.bannerPrincipal(currentItemObject.item.children.props.imagem, false, currentItemObject.item.children.props.descricao)}*/ focusOnSelect={true}>
-                        
+            <Suspense fallback={<p>Carregando</p>}>
+                <BannerPrincipal jogo={this.state.jogo_banner}/>
+            </Suspense>
+            <div className="paginas-inicio">
+                <h2>Minha Lista</h2>
+                <Suspense fallback={<p>Carregando</p>}>
+                    <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
+
                         {this.state.jogos.map((jogo, chave)=>
-                            <div onClick={() => this.bannerPrincipal(jogo.background_image, false, jogo.description, jogo.name)} key={chave}><CardJogo id={jogo.id} nome={jogo.name} categorias={jogo.genres} idade={jogo.esrb_rating != null ? jogo.esrb_rating.name : "none"} imagem={jogo.background_image} descricao={jogo.description}/></div>
+                            <div className="" onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} id_usuario={this.props.id_usuario} paginaUsuario={true} /></Suspense></div>
                         )}
                         
                     </Carousel>
-                </div>
+                </Suspense>
+            </div>
 
-            </main>
-        ): (<div>LOADING</div>);
+        </main>
+        );
     }
 }
-export default connect(estados)(PaginaInicial);
+export default connect(estados, mapDispatchToProps())(PaginaInicial);

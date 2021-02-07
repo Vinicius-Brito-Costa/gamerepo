@@ -4,15 +4,13 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { procurarJogo, selecionarJogo } from './apiRAWG';
 import { connect } from 'react-redux';
 import { pesquisa } from './../actions/pesquisa';
+import { SelecionarJogo } from './../actions/usuario';
+
 
 const mapDispatchToProps = () =>{
     return {
-        pesquisa
-    }
-}
-const estados = (state) => {
-    return {
-        pesquisa_prop: state.pesquisa
+        pesquisa,
+        SelecionarJogo
     }
 }
 
@@ -27,17 +25,25 @@ class Componente extends React.Component{
             jogosEncontrados: [],
             isLoading: false,
             previewId: 0,
-            previewNome: ''
+            previewNome: '',
+            resultadoDePesquisaAtivo: false
         }
-        this.procurar = this.procurar.bind(this);
+        /*this.procurar = this.procurar.bind(this);
         this.selecionar = this.selecionar.bind(this);
         this.pesquisarAction = this.pesquisarAction.bind(this);
+        this.ativarResultadoPesquisa = this.ativarResultadoPesquisa.bind(this);*/
     }
     componentDidMount() {
-        window.addEventListener('scroll', this.checarScroll)
+        window.addEventListener('scroll', this.checarScroll);
+        document.getElementById('cabecalho-barra-pesquisa').addEventListener('keyup', this.checarEnterPesquisa);
+        document.getElementById('cabecalho-barra-pesquisa').addEventListener('focus', this.ativarResultadoPesquisa);
+        document.addEventListener('click', this.desativarResultadoPesquisa);
     }
     componentWillUnmount(){
-        window.removeEventListener('scroll', this.checarScroll)
+        window.removeEventListener('scroll', this.checarScroll);
+        document.getElementById('cabecalho-barra-pesquisa').removeEventListener('keyup', this.checarEnterPesquisa);
+        document.getElementById('cabecalho-barra-pesquisa').removeEventListener('focus', this.ativarResultadoPesquisa);
+        document.removeEventListener('click', this.desativarResultadoPesquisa);
     }
     checarScroll = () => {
         let cabecalho = document.querySelector("#cabecalho-fundo")
@@ -57,15 +63,48 @@ class Componente extends React.Component{
             posicaoScroll: rolagem,
         })
     }
-    procurar(elemento){
-        procurarJogo(elemento.target.value, this);
-        this.setState({valorPesquisado: elemento.target.value});
+    checarEnterPesquisa = (evento) => {
+        this.ativarResultadoPesquisa();
+        if(evento.keyCode === 13){
+            this.setState({jogosEncontrados: []})
+            evento.preventDefault();
+            this.clicarNoBotaoPesquisa();
+        }
     }
-    pesquisarAction(){
-        this.props.pesquisa(this.state.valorPesquisado)
+    clicarNoBotaoPesquisa = () => {
+        document.getElementById('pesquisar').click()
     }
-    selecionar(jogo){
+    ativarResultadoPesquisa = () => {
+        this.setState({resultadoDePesquisaAtivo: true});
+    }
+    desativarResultadoPesquisa = (evento) => {
+    if(evento.target.classList != undefined){
+        let classe = evento.target.classList;
+        if(!classe.contains('cabecalho-pesquisa-item') && !classe.contains('cabecalho-procura')){
+            this.setState({resultadoDePesquisaAtivo: false});
+        }
+    }
+    }
+    procurar = () =>{
+        procurarJogo(this.valorBusca(), this);
+        this.setState({valorPesquisado: this.valorBusca()});
+    }
+    valorBusca = () =>{
+        let elemento = document.getElementById('cabecalho-barra-pesquisa').value;
+        return elemento
+    }
+    pesquisarAction = () =>{
+        this.props.pesquisa(this.valorBusca())
+    }
+    irParaPaginaJogo = (jogo) => {
         selecionarJogo(jogo, this);
+        this.pesquisarAction();
+        this.props.SelecionarJogo(jogo)
+    }
+    selecionar = (jogo) =>{
+        selecionarJogo(jogo, this);
+        this.pesquisarAction();
+        this.clicarNoBotaoPesquisa();
     }
     render(){
         return(
@@ -94,20 +133,21 @@ class Componente extends React.Component{
                                 <Link className="text-light nav-link cabecalho-links"as={Link} to='/lista'>Minha&nbsp;lista</Link>
                             </li>
                         </ul>
-                        <div className="cabecalho-secao-pesquisa my-2 my-lg-0">
+                        <div className="cabecalho-secao-pesquisa my-2 my-lg-0" id="cabecalho-secao-pesquisa">
                             <input type="hidden" name='id_jogo' />
-                            <input className="form-control  cabecalho-procura" id="cabecalho-barra-pesquisa" onChange={ this.procurar } placeholder="Nome do jogo" aria-label="Search"/>
-                            <Link as={Link} to="/pesquisa" onClick={() => this.pesquisarAction()} ><button className="btn cabecalho-procura-botao" id="cabecalho-submit">Procurar</button></Link>
-                            <div className="cabecalho-pesquisa-resultado">
-                            {this.state.jogosEncontrados.map((valor, index) => {
-                                if(valor){
-                                    return <button onClick={() => this.selecionar(valor)}  key={index} className=" btn cabecalho-pesquisa-item" style={{display: 'block'}}>{valor.name} <span className="cabecalho-pesquisa-add">+</span></button>
-                                }
-                                else{ return null }
-                            }
-                            )}
+                            <input className="form-control  cabecalho-procura" id="cabecalho-barra-pesquisa" autoComplete="off" onChange={ this.procurar } placeholder="Nome do jogo" aria-label="Search"/>
+                            
+                            {this.state.resultadoDePesquisaAtivo ? <div className="cabecalho-pesquisa-resultado" id="cabecalho-pesquisa-resultado">
+                                {this.state.jogosEncontrados.map((valor, index) => {
+                                        if(valor){
+                                            return <Link as={Link} to="/jogo" onClick={() => this.irParaPaginaJogo(valor)}  key={index} className=" btn cabecalho-pesquisa-item" style={{display: 'block'}}>{valor.name} <span className="cabecalho-pesquisa-add">+</span></Link>
+                                        }
+                                        else{ return null }
+                                    }
+                                )}
+                            </div> : <div className="cabecalho-pesquisa-resultado" id="cabecalho-pesquisa-resultado"></div>}
                         </div>
-                        </div>
+                        <Link id="pesquisar" as={Link} to="/pesquisa" onClick={() => this.pesquisarAction()} ><button className="btn cabecalho-procura-botao" id="cabecalho-submit">Procurar</button></Link>
                     </div>
                 </nav>
                 <Rotas />
@@ -116,4 +156,4 @@ class Componente extends React.Component{
     }
 }
 
-export default connect (estados, mapDispatchToProps())(Componente);
+export default connect (null, mapDispatchToProps())(Componente);

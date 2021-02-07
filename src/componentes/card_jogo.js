@@ -1,20 +1,48 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { SelecionarJogo } from './../actions/usuario';
+import { Load } from './../actions/paginaPrincipal';
+import { Link, withRouter } from 'react-router-dom';
 
-
-export default class BoxJogo extends React.Component{
+const mapDispatchToProps = () => {
+    return{
+        SelecionarJogo,
+        Load
+    }
+}
+const estados = (state) => {
+    return{
+        jogosDoUsuario: state.listJogosUsuario,
+        frontReload: state.frontReload
+    }
+}
+class BoxJogo extends React.Component{
+    _estaMontado = false;
     constructor(props){
         super(props);
         this.state = {
-            id_jogo: this.props.id,
-            descricao: this.props.descricao,
-            categorias:this.props.categorias,
-            idade: this.props.idade,
+            id_jogo: this.props.jogo.id,
+            descricao: this.props.jogo.description,
+            favorito: false,
+            categorias:this.props.jogo.genres,
+            idade: this.props.jogo.esrb_rating != null ? this.props.jogo.esrb_rating.name : "none",
             faixa: 'L',
             cor_faixa: 'faixa_livre'
         }
+        this.adicionarAoUsuario = this.adicionarAoUsuario.bind(this);
+        this.removerDoUsuario = this.removerDoUsuario.bind(this);
+        this.checarFavorito = this.checarFavorito.bind(this);
     }
     componentDidMount(){
-        this.faixaEtariaCheck();
+        this._estaMontado = true;
+        if(this._estaMontado){
+            console.log(this.state.favorito)
+            this.faixaEtariaCheck();
+            this.checarFavorito();
+        }
+    }
+    componentWillUnmount(){
+        this._estaMontado = false;
     }
     faixaEtariaCheck(){
         let idade = this.state.idade;
@@ -44,10 +72,71 @@ export default class BoxJogo extends React.Component{
             this.setState({cor_faixa: 'faixa_livre px-3'});
         }
     }
+    checarFavorito(){
+        setInterval(() => {
+            let jogos = this.props.jogosDoUsuario;
+            for(let i = 0; i < jogos.length; i++){
+                if(jogos[i].id === this.state.id_jogo){
+                    this.setState({favorito: true});
+                }
+            }
+        }, 1000)
+    }
+    adicionarAoUsuario(){
+        let dado = {
+            id_usuario: this.props.id_usuario,
+            id_jogo: this.props.jogo.id
+        }
+        const cabecalho = {
+            method: "POST",
+            body: JSON.stringify(dado),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        let url = 'http://localhost:777/cadastroJogosUsuario';
+        /*fetch(url, cabecalho);
+        this.props.Load();
+        this.setState({favorito: !this.state.favorito});*/
+        console.log('cadastrou')
+        let func = (async () => {
+            await fetch(url, cabecalho)
+            if(!this.props.frontReload){
+                this.props.Load()
+            }
+        })
+        
+        if(this._estaMontado) func()
+        this.setState({favorito: !this.state.favorito})
+    }
+    removerDoUsuario(){
+        let dado = {
+            id_usuario: this.props.id_usuario,
+            id_jogo: this.props.jogo.id
+        }
+        const cabecalho = {
+            method: "POST",
+            body: JSON.stringify(dado),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        let url = 'http://localhost:777/removerJogoUsuario';
+        console.log('removeu')
+        let func = (async () => {
+            await fetch(url, cabecalho)
+            if(!this.props.frontReload){
+                this.props.Load()
+            }
+        })
+        
+        if(this._estaMontado) func()
+        this.setState({favorito: !this.state.favorito})
+    }
     render(){
         return(
-            <div className={`game-card border-0 game-card-link mx-auto`}>
-                    <img className="game-card-img" src={/*require(`./../imagens/${this.props.imagem}`).default*/ this.props.imagem} alt="" />
+            <div className={`game-card border-0 game-card-link mx-auto`} onClick={()=> this.props.Load()}>
+                    <img className="game-card-img" src={this.props.jogo.background_image != null ? this.props.jogo.background_image : 'https://i.ytimg.com/vi/mnMEfY1fORg/maxresdefault.jpg'} alt="" />
                     <div className="game-card-info">
                         <div className="game-card-info-conteudo">
                             <ul className="d-flex px-0 mx-0 game-card-categorias">
@@ -55,13 +144,16 @@ export default class BoxJogo extends React.Component{
                                     <li className="mx-2" key={id}><a href="/categoria" className="text-light">{categoria['name']}</a></li>
                                 )}
                             </ul>
-                            <h4 className="game-card-nome text-center font-weight-bold text-uppercase">{this.props.nome}</h4>
+                            <h4 className="game-card-nome text-center font-weight-bold text-uppercase">{this.props.jogo.name}</h4>
                             <div className={`game-card-faixa font-weight-bold btn ${this.state.cor_faixa}`}><span>{this.state.faixa}</span></div>
-                            <div className="game-card-lista font-weight-bold btn"><span>{this.props.lista}X</span></div>
-                            <a href="/jogar" className="btn btn-success game-card-jogar w-25 font-weight-bold"><span>JOGAR</span></a>
+                            {this.props.paginaUsuario ? 
+                                <div className="game-card-lista font-weight-bold btn" onClick={this.removerDoUsuario}><span>x</span></div>
+                            :(this.state.favorito ? '': <div className="game-card-lista font-weight-bold btn" onClick={this.adicionarAoUsuario}><span>+</span></div>)}
+                            <Link as={Link} to='/jogo' onClick={() => this.props.SelecionarJogo(this.props.jogo)} className="btn border-success game-card-jogar w-25 font-weight-bold"><span>INFO</span></Link>
                         </div>
                     </div>
                 </div>
         );
     }
 }
+export default  connect(estados, mapDispatchToProps())(withRouter(BoxJogo));

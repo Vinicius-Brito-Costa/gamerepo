@@ -1,0 +1,8 @@
+[build]
+    base = '/'
+    publish = 'build'
+    comand = 'npm run build'
+[[redirects]]
+    from = '/*'
+    to = '/'
+    status = 200

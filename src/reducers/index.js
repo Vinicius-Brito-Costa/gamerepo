@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux';
-import usuario from './usuario';
-import { logarUsuario } from './usuario';
+import { usuario, listJogosUsuario, jogoSelecionado } from './usuario';
 import { reload } from './pagina_principal';
 import { pesquisa } from './pesquisa';
 const reducers = combineReducers({
     id_usuario: usuario,
-    front_page_reload: reload,
+    listJogosUsuario: listJogosUsuario,
+    jogoSelecionado: jogoSelecionado,
+    frontReload: reload,
     pesquisa: pesquisa
 })
 export default reducers;

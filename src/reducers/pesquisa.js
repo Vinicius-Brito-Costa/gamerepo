@@ -1,5 +1,11 @@
-export const pesquisa = (state = 0, action) => {
-    state = action.type;
-    return action.type;
+let pesquisaAtual = ''
+export const pesquisa = (state = pesquisaAtual, action) => {
+    switch(action.type){
+        default:
+            return state
+        case 'PESQUISA':
+            pesquisaAtual = action.payload;
+            return pesquisaAtual;
+    }
 }
 export default pesquisa;

@@ -66,7 +66,6 @@ class PaginaCadastro extends React.Component{
         this.setState({ previewImg: jogo.background_image});
         this.setState({ previewNome: jogo.name});
         this.setState({ previewId: jogo.id});
-        console.log(jogo.id)
         let url = `https://api.rawg.io/api/games/${jogo.id}`;
         fetch(url).then((resposta) => { 
             let json = resposta.json();

@@ -1,5 +1,6 @@
 export const pesquisa = (valor) => {
     return {
-        type: valor
+        type: 'PESQUISA',
+        payload: valor
     }
 }

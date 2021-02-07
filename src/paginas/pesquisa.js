@@ -2,10 +2,13 @@ import React from 'react';
 import ListaJogos from './../componentes/lista_jogos';
 import { procurarJogo } from './../componentes/apiRAWG';
 import { connect } from 'react-redux';
+import { scrollToTop } from './../javascript/funcoes';
+import Loading from './../componentes/placeholder/loading';
 
 const estados = (state) => {
     return {
-        pesquisa: state.pesquisa
+        pesquisa: state.pesquisa,
+        id_usuario: state.id_usuario
     }
 }
 
@@ -33,6 +36,7 @@ class PaginaPesquisa extends React.Component{
         }
     }
     async criarPaginas(){
+        this.setState({jogosRenderizados: []})
         await procurarJogo(this.props.pesquisa, this, 9);
         let itensPagina = this.state.itensPorPagina;
         let jogos = this.state.jogosEncontrados;
@@ -45,19 +49,22 @@ class PaginaPesquisa extends React.Component{
         this.setState({jogosRenderizados: paginas});
     }
     selecionarPagina(pagina){
+        scrollToTop();
         this.setState({paginaAtual: pagina})
     }
     render(){
         return this.state.jogosRenderizados.length > 0 ? (
             <main className="main-body px-0 text-light mx-auto">
                 <ListaJogos jogos={this.state.jogosRenderizados[this.state.paginaAtual]} index={this.state.paginaAtual}/>
-                <div className="pesquisa-selecao-paginas w-100">
-                    {this.state.jogosRenderizados.map((conteudo, index) => 
-                        <button className="btn btn-secondary" key={index} onClick={() => this.selecionarPagina(index)} >{index + 1}</button>
-                    )}
+                <div className="pesquisa-selecao-paginas text-center">
+                    <div className='d-block'>
+                        {this.state.jogosRenderizados.map((conteudo, index) => 
+                            <button className="btn border-secondary text-light mx-1" key={index} onClick={() => this.selecionarPagina(index)} >{index + 1}</button>
+                        )}
+                    </div>
                 </div>
             </main>
-        ): (<div>LOADING</div>);
+        ): (<Loading/>);
     }
 }
 export default connect(estados)(PaginaPesquisa);

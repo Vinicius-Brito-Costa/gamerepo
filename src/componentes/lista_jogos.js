@@ -2,9 +2,10 @@ import React from 'react';
 import CardJogo from './card_jogo'
 import { connect } from 'react-redux';
 
-const estados = (store) => {
+const estados = (state) => {
     return {
-
+        id_usuario: state.id_usuario,
+        listJogosUsuario: state.listJogosUsuario
     }
 }
 
@@ -25,7 +26,7 @@ class Resultados extends React.Component{
             <main className="lista-de-jogos-main w-100 row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 mx-auto px-0 py-4">
                 {this.state.jogos.map((jogo, index) => 
                     
-                    <div className="w-100" key={index}><CardJogo id={jogo.id} nome={jogo.name} categorias={jogo.genres} idade={jogo.esrb_rating != null ? jogo.esrb_rating.name : "none"} imagem={jogo.background_image} descricao={jogo.description}  /></div>
+                    <div className="w-100 mt-2" key={index}><CardJogo jogo={jogo} id_usuario={this.props.id_usuario}/></div>
                 )}
             </main>
         );
