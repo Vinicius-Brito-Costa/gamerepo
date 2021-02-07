@@ -8,6 +8,7 @@ export function conexao(msg = '') {
         password: process.env.PASSWORD || '16a70633',
         database: bd
     });
+
     con.connect((erro) => {
         if (erro) {
             console.log('A conexão com o banco de dados falhou! ' + erro);
@@ -21,7 +22,10 @@ export function conexao(msg = '') {
         }
     });
     return con;
+    
 }
+
+
 export function pegarJogosDoUsuario(post, resposta) {
     conexao('Pegar jogos do usuario.').query("SELECT * FROM  lista_de_jogos WHERE id_usuario = ?;", [post.id_usuario], (erro, resultado) => {
         resposta.send(JSON.stringify(resultado));
