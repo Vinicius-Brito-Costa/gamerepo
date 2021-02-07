@@ -94,7 +94,7 @@ class BoxJogo extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = 'http://localhost:777/cadastroJogosUsuario';
+        let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
         /*fetch(url, cabecalho);
         this.props.Load();
         this.setState({favorito: !this.state.favorito});*/
@@ -121,7 +121,7 @@ class BoxJogo extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = 'http://localhost:777/removerJogoUsuario';
+        let url = 'https://rest-api-gameflix.herokuapp.com/removerJogoUsuario';
         console.log('removeu')
         let func = (async () => {
             await fetch(url, cabecalho)
@@ -133,9 +133,10 @@ class BoxJogo extends React.Component{
         if(this._estaMontado) func()
         this.setState({favorito: !this.state.favorito})
     }
+    
     render(){
         return(
-            <div className={`game-card border-0 game-card-link mx-auto`} onClick={()=> this.props.Load()}>
+            <div className={`game-card border-0 game-card-link mx-auto`}>
                     <img className="game-card-img" src={this.props.jogo.background_image != null ? this.props.jogo.background_image : 'https://i.ytimg.com/vi/mnMEfY1fORg/maxresdefault.jpg'} alt="" />
                     <div className="game-card-info">
                         <div className="game-card-info-conteudo">

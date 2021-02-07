@@ -1,6 +1,5 @@
 import express from 'express';
-import { conexao, pegarJogosDoUsuario, cadastrarJogoUsuario, removerJogoUsuario } from './bd.js';
-import { json, urlencoded } from 'body-parser';
+import {  pegarJogosDoUsuario, cadastrarJogoUsuario, removerJogoUsuario } from './bd.js';
 import cors from 'cors';
 import morgan from 'morgan';
 
@@ -9,39 +8,29 @@ exp.use(morgan('dev'))
 
 exp.set('view engine', 'ejs');
 
-exp.use(urlencoded({ extended: false }))
-exp.use(json());
+exp.use(express.json());
 exp.use(cors());
 exp.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', '*');
+    res.header('Access-Control-Allow-Headers', '*');
+    res.header('Access-Control-Allow-Credentials', true);
     next();
 });
 
-exp.post('/', async (requisitar, resposta, next) => {
+exp.post('/', (requisitar, resposta, next) => {
     console.log('entrou pegar jogos')
-    await pegarJogosDoUsuario(conexao, requisitar.body, resposta);
+    pegarJogosDoUsuario( requisitar.body, resposta);
 })
-exp.post('/cadastroJogosUsuario', async (requisitar, resposta, next) => {
+exp.post('/cadastroJogosUsuario', (requisitar, resposta, next) => {
     console.log('entrou cadastro')
-    await cadastrarJogoUsuario(conexao, requisitar.body);
+    cadastrarJogoUsuario( requisitar.body);
 })
-exp.post('/removerJogoUsuario', async (requisitar, resposta, next) => {
+exp.post('/removerJogoUsuario', (requisitar, resposta, next) => {
     console.log('entrou remover jogos')
-    await removerJogoUsuario(conexao, requisitar.body);
+    removerJogoUsuario( requisitar.body);
 })
-exp.use((req, res, next) => {
-    const erro = new Error('Não encontrado.');
-    erro.status(404);
-    next(erro)
-})
-exp.use((erro, req, res, next) => {
-    res.status(erro.status || 500);
-    res.json({
-        error: {
-            mensagem: erro.message
-        }
-    })
-})
-let porta = 777;
+
+let porta = process.env.PORT || 3306;
 
 exp.listen(porta);

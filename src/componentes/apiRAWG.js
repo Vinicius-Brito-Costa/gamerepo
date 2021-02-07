@@ -41,7 +41,7 @@ export async function pegarJogos(jogos, estado){
     return json
 }
 export async function cadastrarJogo(estado, id_usuario, id_jogo){
-    const url = `http://localhost:777/cadastroJogosUsuario`;
+    const url = `https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario`;
     let json = {
         id_usuario: id_usuario,
         id_jogo: id_jogo

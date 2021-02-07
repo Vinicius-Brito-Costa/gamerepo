@@ -48,7 +48,7 @@ class PaginaInicial extends React.Component{
             this.pegarJogosDoUsuario();
         }
     }
-    componentDidUpdate(prevProps){
+    componentDidUpdate(){
         let reload = this.props.reload
         if(reload){
             reload = false;
@@ -58,7 +58,7 @@ class PaginaInicial extends React.Component{
     componentWillUnmount(){
         this._estaMontado = false;
     }
-    async pegarJogosDoUsuario(){
+    pegarJogosDoUsuario(){
         let dado = {
             id_usuario: this.props.id_usuario
         }
@@ -69,12 +69,13 @@ class PaginaInicial extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
+        console.log(this.props.reload)
         console.log(cabecalho.body);
         let func = (async () => {
             let recarregado = this.props.reload;
             console.log(recarregado)
             this.props.Loaded();
-            let resultado = await fetch('http://localhost:777', cabecalho)
+            let resultado = await fetch('https://rest-api-gameflix.herokuapp.com/', cabecalho)
             let json = await resultado.json();
             if(recarregado){
                 console.log('Sim')
@@ -86,9 +87,8 @@ class PaginaInicial extends React.Component{
                 this.bannerPrincipal(this.state.jogos[0]);
             }
         })
-        await func();
+        func();
     }
-
     bannerPrincipal(jogo){
         this.setState({
             jogo_banner: jogo

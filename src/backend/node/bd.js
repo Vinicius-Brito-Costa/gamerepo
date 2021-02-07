@@ -1,16 +1,16 @@
 import mysql from 'mysql2';
 
-export function conexao(msg = 'seila') {
-    const bd = 'gameflix';
+export function conexao(msg = '') {
+    const bd = process.env.BD || 'heroku_ba01ff1f594b282';
     const con = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
+        host: process.env.HOST || 'us-cdbr-east-03.cleardb.com',
+        user: process.env.USER || 'beb6a8632b1042',
+        password: process.env.PASSWORD || '16a70633',
         database: bd
     });
     con.connect((erro) => {
         if (erro) {
             console.log('A conexão com o banco de dados falhou! ' + erro);
-            return 
         } 
         else {
             if (msg === 'Finalizar a conexão.') {
@@ -22,13 +22,12 @@ export function conexao(msg = 'seila') {
     });
     return con;
 }
-export function pegarJogosDoUsuario(conexao, post, resposta) {
+export function pegarJogosDoUsuario(post, resposta) {
     conexao('Pegar jogos do usuario.').query("SELECT * FROM  lista_de_jogos WHERE id_usuario = ?;", [post.id_usuario], (erro, resultado) => {
         resposta.send(JSON.stringify(resultado));
     });
-    //conexao().end();
 }
-export function cadastrarJogoUsuario(conexao, post) {
+export function cadastrarJogoUsuario(post) {
     let id_usuario = post.id_usuario;
     let id_jogo = post.id_jogo;
     let sqlJogosIguais = "SELECT * FROM lista_de_jogos WHERE id_usuario = ? AND id_jogo = ?;";
@@ -44,14 +43,11 @@ export function cadastrarJogoUsuario(conexao, post) {
                 if (erro) {
                     console.log('A query falhou. ' + erro);
                 }
-    
             });
-    
         }
     });
-    //conexao().end();
 }
-export function removerJogoUsuario(conexao, post) {
+export function removerJogoUsuario(post) {
     let id_usuario = post.id_usuario;
     let id_jogo = post.id_jogo;
     let sqlJogo = "DELETE FROM lista_de_jogos WHERE id_usuario = ? AND id_jogo = ?;";
@@ -60,5 +56,4 @@ export function removerJogoUsuario(conexao, post) {
             console.log('A remoção do jogo falhou.');
         }
     })
-    //conexao().end();
 }
