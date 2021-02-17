@@ -4,7 +4,7 @@ function SemJogo(){
             <div className='container text-center'>
                 <div className='pagina-sem-jogo-fade'></div>
                 <div className='pagina-sem-jogo-over'></div>
-                <img src={require('./../../imagens/streets.gif').default} />
+                <img src={require('./../../imagens/streets.gif').default} alt="" />
             </div>
             <div className='pagina-sem-jogo-texto'>
                 <h2 className='text-light'>Parece que você ainda não adicionou nenhum jogo a sua lista.</h2>

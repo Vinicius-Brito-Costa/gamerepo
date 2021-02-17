@@ -1,6 +1,7 @@
 body {
     background-color: rgb(41, 41, 41);
     margin: 0;
+    height: auto;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -26,12 +27,24 @@ main {
     background: -webkit-linear-gradient(180deg, rgba(0,0,0,1) 36%, rgba(255,255,255,0) 100%);
     background: linear-gradient(180deg, rgba(0,0,0,1) 36%, rgba(255,255,255,0) 100%);
 }
+.main-body-loading{
+    padding-top: 80px;
+    min-height: 70vh;
+    padding-bottom: 40px;
+    background: -moz-linear-gradient(180deg, rgba(0,0,0,1) 36%, rgba(255,255,255,0) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(0,0,0,1) 36%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,1) 36%, rgba(255,255,255,0) 100%);
+}
 .paginas-inicio {
     position: relative;
     z-index: 2;
     min-height: 20vh;
-    padding-left: 4vw;
-    transform: translateY(-150px);
+    transform: translateY(-130px);
+}
+.paginas-inicio-titulo {
+    color: white;
+    margin: 20px 5vw;
+    margin-top: 0;
 }
 
 .Logo {
@@ -135,12 +148,15 @@ main {
     background-color: rgba(255, 255, 255, 0.219);
     border: solid 1px rgba(255, 255, 255, 0.308);
 }
-
-
 /*RODAPE*/
 
 .rodape {
-    margin-top: 50px;
+    position: relative;
+    z-index: 2;
+    background: -moz-linear-gradient(0deg, rgba(0,0,0,1) 54%, rgba(255,255,255,0) 100%);
+    background: -webkit-linear-gradient(0deg, rgba(0,0,0,1) 54%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(0deg, rgba(0,0,0,1) 54%, rgba(255,255,255,0) 100%);
+    padding-top: 70px;
     padding-left: 4vw;
     padding-right: 4vw;
 }
@@ -158,7 +174,6 @@ main {
     height: 100vh;
     width: 100%;
 }
-
 .banner-main-info {
     z-index: 1;
     background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(46, 46, 46, 0.1) 30%, rgba(66, 66, 66, 0) 50%, rgba(46, 46, 46, 0.1) 70%, rgba(0, 0, 0, 1) 100%);
@@ -328,6 +343,7 @@ main {
 }
 
 .game-card-nome {
+    color: white;
     font-size: 1.3em;
     width: 90%;
     position: absolute;
@@ -365,11 +381,12 @@ main {
     left: 73%;
     height: 25%;
     width: 15%;
-    color: #28a745;
+    color: #0070E0;
+    border: 1px solid #0070E0;
 }
 .game-card-jogar:hover {
-    color: #2eca52;
-    filter: drop-shadow(#33d659 0px 0px 2px);
+    color: #1A7CFA;
+    filter: drop-shadow(#0070E0 0px 0px 2px);
     
 }
 .game-card-jogar span{
@@ -407,17 +424,16 @@ main {
 .dev-card {
     transition: .2s ease-in-out;
     position: relative;
-    width: 85%;
     height: 250px;
     border-radius: 6px;
     overflow: hidden;
+    width: 95%;
 }
 .dev-card-link:hover{
     cursor: pointer;
 }
 .dev-card:hover {
     transition: .2s ease-in-out;
-    width: 100%;
 }
 
 .dev-card-img {
@@ -439,14 +455,20 @@ main {
     border: none;
     top: 50%;
     left: 50%;
-    background-color: rgba(0, 0, 0, 0.726);
-}
-
-.dev-card-info:hover {
-    transition: opacity .2s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.411);
     opacity: 1;
 }
 
+.dev-card-info:hover {
+    background-color: rgba(0, 0, 0, 0.808);
+    transition: all .2s ease-in-out;
+}
+.dev-card-info:hover .dev-card-categorias{
+    display: flex;
+}
+.dev-card-info:hover .dev-card-jogo{
+    display: block;
+}
 .dev-card-info-conteudo {
     margin: 1.5%;
 }
@@ -459,32 +481,60 @@ main {
     transform: translate(-50%, -50%);
 }
 .dev-card-jogo {
+    display: none;
     position: absolute;
-    top: 84%;
+    top: 50%;
     left: 50%;
-    height: 15%;
+    height: 98%;
     width: 98%;
-    transform: translateX(-50%);
-    color: #28a745;
+    transform: translate(-50%, -50%);
+    color: #0070E0;
+    border: 1px solid #0070E0;
 }
 .dev-card-jogo:hover {
-    color: #2eca52;
-    filter: drop-shadow(#33d659 0px 0px 2px);   
+    color: #1A7CFA;
+    filter: drop-shadow(#0070E0 0px 0px 2px);   
 }
 .dev-card-jogo span{
     position: absolute;
-    top: 50%;
+    top: 94%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
 .dev-card-categorias {
+    display: none;
     list-style: none;
+    z-index: 2;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
-
+/* LISTA DE DEVS*/
+.lista-de-dev-main{
+    max-height: 540px;
+    margin: auto;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+.lista-de-jogos-dev-box{
+    width: 100%;
+}
+.lista-de-dev-main::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+.lista-de-dev-main::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.3); 
+    border: 1px solid rgba(255, 255, 255, 0.219);
+    border-radius: .3rem;
+}
+ 
+.lista-de-dev-main::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.219);
+    border: solid 1px rgba(255, 255, 255, 0.308);
+}
 /* Cores BoxGame */
 
 .faixa_livre {
@@ -531,7 +581,19 @@ main {
     height: 70vh;
     width: 100%;
 }
-
+.pagina-jogo-main-avatar{
+    
+    z-index: 4;
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 80%;
+    border: solid 1px #0070E0;
+}
 .pagina-jogo-main-info {
     z-index: 1;
     background: linear-gradient(90deg, rgb(0, 0, 0, 1) 0%, rgba(46, 46, 46, 0.3) 25%, rgba(66, 66, 66, 0) 50%, rgba(46, 46, 46, 0.3) 75%, rgb(0, 0, 0, 1) 100%);
@@ -629,7 +691,7 @@ main {
     margin: auto;
     font-size: 26px;
     max-width: 90%;
-    max-height: 150px;
+    max-height: 460px;
 
     overflow: hidden;
     overflow-y: scroll;
@@ -659,6 +721,11 @@ main {
     margin: 0;
     padding: 0;
 }
+.pagina-jogo-main-dev{
+    margin: auto;
+    margin-top: 20px;
+    max-width: 90%;
+}
 .pagina-jogo-botao-jogar {
     border: 1px solid white;
     background: rgba(255, 255, 255, 0.219);
@@ -681,7 +748,29 @@ main {
     font-size: 23px;
     font-weight: bold;
 }
-
+.pagina-jogo-main-screenshot{
+    margin: auto;
+    margin-top: 60px;
+    max-width: 90%;
+}
+.pagina-jogo-main-screenshot h2{
+    margin-bottom: 20px;
+}
+.pagina-jogo-main-sugeridos{
+    margin: auto;
+    max-width: 95%;
+}
+.pagina-jogo-main-sugeridos-titulo{
+    margin: auto;
+    max-width: 90%;
+    margin-top: 60px;
+    margin-bottom: 10px;
+}
+.pagina-jogo-main-gallery{
+    overflow: hidden;
+    
+    border-radius: .35rem;
+}
 .pagina-jogo-main-fade {
     position: absolute;
     z-index: +2;
@@ -690,7 +779,70 @@ main {
     height: 100px;
     background: linear-gradient(0deg, rgba(41, 41, 41, 1) 43%, rgba(41, 41, 41, 0.9475140397956058) 59%, rgba(41, 41, 41, 0) 100%);
 }
-
+.pagina-jogo-favorito{
+    z-index: 3;
+    position: absolute;
+    width: 120px;
+    height: 50px;
+    top: 70%;
+    left: 65%;
+    transform: translate(-10%, -10%);
+    border: 1px solid #1A7CFA;
+    background-color: #0070E0;
+    padding: 10px;
+    border-radius: .35rem;
+}
+.pagina-jogo-favorito:hover{
+    background-color: #095db1;
+}
+.pagina-jogo-favorito div{
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+}
+.pagina-jogo-favorito h1{
+    position: absolute;
+    text-align: center;
+    margin: 0;
+    top: 50%;
+    left: -15%;
+    transform: translate(-55%, -55%) rotate(0deg);
+    font-size: 30px;
+}
+.pagina-jogo-remover{
+    z-index: 3;
+    position: absolute;
+    width: 120px;
+    height: 50px;
+    top: 70%;
+    left: 65%;
+    transform: translate(-10%, -10%);
+    border: 1px solid #fa6c1a;
+    background-color: #e03f00;
+    padding: 10px;
+    border-radius: .35rem;
+}
+.pagina-jogo-remover:hover{
+    background-color: #b14709;
+}
+.pagina-jogo-remover div{
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+}
+.pagina-jogo-remover h1{
+    position: absolute;
+    text-align: center;
+    margin: 0;
+    top: 50%;
+    left: -15%;
+    transform: translate(-50%, -60%) rotate(0deg);
+    font-size: 25px;
+}
 .paginas-conteudo {
     padding-top: 80px;
 }
@@ -715,7 +867,193 @@ main {
         background: black;
     }
 }
+/*PAGINA DO DEV*/
 
+.pagina-dev-conteudo {
+    margin-top: 140px;
+    position: relative;
+}
+.pagina-dev-conteudo h2{
+    margin: auto;
+    position: relative;
+}
+.pagina-dev-titulo h1{
+    font-size: 60px;
+    margin-bottom: 50px;
+    width: 100%;
+}
+
+.pagina-dev-main-text {
+    margin: auto;
+    font-size: 26px;
+    max-width: 90%;
+    max-height: 150px;
+
+    overflow: hidden;
+    overflow-y: scroll;
+    text-align: justify;
+    transition: .5s all;
+}
+.pagina-dev-main-text h2{
+    position: absolute;
+    top: -50px;
+}
+.pagina-dev-main-text::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+.pagina-dev-main-text::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.3); 
+    border: 1px solid rgba(255, 255, 255, 0.219);
+    border-radius: .3rem;
+}
+ 
+.pagina-dev-main-text::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.219);
+    border: solid 1px rgba(255, 255, 255, 0.308);
+}
+.pagina-dev-main-text p{
+    margin: 0;
+    padding: 0;
+}
+.pagina-dev-main-dev{
+    margin: auto;
+    margin-top: 80px;
+    max-width: 90%;
+}
+/*LOGIN*/
+.pagina-login-background{
+    background-image: url('./imagens/bgLogin.png');
+    background-size: cover;
+
+}
+.pagina-login-main{
+    color: white;
+    height: 100vh;
+}
+.pagina-login-formulario-fundo{
+    border: solid 1px rgba(255, 255, 255, 0.075);
+    position: absolute;
+    background: rgba(255, 255, 255, 0.034);
+    backdrop-filter: blur(2px);
+    width: 350px;
+    height: 280px;
+    border-radius: .35rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.pagina-login-input{
+    backdrop-filter: blur(4px);
+    color: white;
+    background-color: rgba(0, 0, 0, 0.493);
+    border: none;
+}
+.pagina-login-formulario{
+    width: 90%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.pagina-login-btn-entrar{
+    font-weight: bold;
+    margin-top: 10px;
+    width: 100%;
+    color: white;
+    background-color: #0070E0;
+}
+.pagina-login-btn-entrar:hover{
+    color: white;
+    background-color: #1A7CFA;
+}
+.pagina-login-btn-cadastrar{
+    font-weight: bold;
+    margin-top: 10px;
+    width: 100%;
+    color: white;
+    background-color: #e03f00;
+}
+.pagina-login-btn-cadastrar:hover{
+    color: white;
+    background-color: #fa6c1a;
+}
+.pagina-login-fade {
+    z-index: 2;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(0deg, rgba(41, 41, 41, 1) 43%, rgba(41, 41, 41, 0.9475140397956058) 30%, rgba(41, 41, 41, 0) 100%);
+    position: absolute;
+    top: 90vh;
+    left: 0;
+}
+/*CADASTRO*/
+.pagina-cadastro-background{
+    background-image: url('./imagens/bgCadastro.png');
+    background-size: cover;
+
+}
+.pagina-cadastro-main{
+    color: white;
+    height: 100vh;
+}
+.pagina-cadastro-formulario-fundo{
+    border: solid 1px rgba(255, 255, 255, 0.075);
+    position: absolute;
+    background: rgba(255, 255, 255, 0.034);
+    backdrop-filter: blur(2px);
+    width: 350px;
+    height: 420px;
+    border-radius: .35rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.pagina-cadastro-input{
+    backdrop-filter: blur(4px);
+    color: white;
+    background-color: rgba(0, 0, 0, 0.493);
+    border: none;
+}
+.pagina-cadastro-formulario{
+    width: 90%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.pagina-cadastro-btn-entrar{
+    font-weight: bold;
+    margin-top: 10px;
+    width: 100%;
+    color: white;
+    background-color: #0070E0;
+}
+.pagina-cadastro-btn-entrar:hover{
+    color: white;
+    background-color: #1A7CFA;
+}
+.pagina-cadastro-btn-cadastrar{
+    font-weight: bold;
+    margin-top: 10px;
+    width: 100%;
+    color: white;
+    background-color: #e03f00;
+}
+.pagina-cadastro-btn-cadastrar:hover{
+    color: white;
+    background-color: #fa6c1a;
+}
+.pagina-cadastro-fade {
+    z-index: 2;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(0deg, rgba(41, 41, 41, 1) 43%, rgba(41, 41, 41, 0.9475140397956058) 30%, rgba(41, 41, 41, 0) 100%);
+    position: absolute;
+    top: 90vh;
+    left: 0;
+}
 /*PLACEHOLDERS*/
 
 .pagina-sem-jogo img{
@@ -742,9 +1080,9 @@ main {
     background: linear-gradient(180deg, rgba(0,0,0,1) 36%, rgba(255,255,255,0) 100%);
 }
 .pagina-sem-jogo-fade{
-    z-index: +2;
+    z-index: 2;
     position: absolute;
-    transform: translateY(600px);
+    transform: translateY(79.5vh);
     left: 0;
     width: 100%;
     height: 150px;

@@ -1,12 +1,10 @@
 import React, { lazy, Suspense } from 'react';
 import { consts } from 'react-elastic-carousel';
-import { pegarJogosEstado } from './../componentes/apiRAWG';
+import { jogosLancamento, futurosLancamentos, jogosAclamados, pegarParametro } from './../componentes/apiRAWG';
 import { connect } from 'react-redux';
-import { AtualizarListaJogos } from './../actions/usuario'
+import { AtualizarListaJogos, ResetRemoverJogos, ResetAdicionarJogos } from './../actions/usuario'
 import { Loaded, Load } from './../actions/paginaPrincipal'
 import Loading from './../componentes/placeholder/loading';
-import SemJogo from './../componentes/placeholder/usuarioSemJogo';
-
 
 const Carousel = lazy(() => import('react-elastic-carousel'));
 const BannerPrincipal = lazy(() => import('./../componentes/banner_principal'));
@@ -17,13 +15,17 @@ const mapDispatchToProps = () =>{
     return {
         AtualizarListaJogos,
         Loaded,
-        Load
+        Load,
+        ResetRemoverJogos,
+        ResetAdicionarJogos
     }
 }
 const estados = (state) => {
     return {
         id_usuario: state.id_usuario,
         listJogosUsuario: state.listJogosUsuario,
+        jogosAdicionados: state.jogosAdicionados,
+        jogosRemovidos: state.jogosRemovidos,
         reload: state.frontReload
     }
 }
@@ -33,65 +35,38 @@ class PaginaInicial extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            jogos: [],
+            jogosAclamados: [],
+            jogosLancamento: [],
+            futurosLancamentos: [],
             setas: true,
             jogo_banner: [],
             isLoading: true
         }
         this.bannerPrincipal = this.bannerPrincipal.bind(this);
-        this.pegarJogosDoUsuario = this.pegarJogosDoUsuario.bind(this);
-        
     }
     componentDidMount(){
         this._estaMontado = true;
         if(this._estaMontado){
-            this.pegarJogosDoUsuario();
+            jogosAclamados(10, this);
+            jogosLancamento(10, this);
+            futurosLancamentos(10, this);
         }
     }
     componentDidUpdate(){
         let reload = this.props.reload
         if(reload){
             reload = false;
-            this.pegarJogosDoUsuario();
         }
     }
     componentWillUnmount(){
         this._estaMontado = false;
     }
-    pegarJogosDoUsuario(){
-        let dado = {
-            id_usuario: this.props.id_usuario
-        }
-        const cabecalho = {
-            method: "POST",
-            body: JSON.stringify(dado),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        console.log(this.props.reload)
-        console.log(cabecalho.body);
-        let func = (async () => {
-            let recarregado = this.props.reload;
-            console.log(recarregado)
-            this.props.Loaded();
-            let resultado = await fetch('https://rest-api-gameflix.herokuapp.com', cabecalho)
-            let json = await resultado.json();
-            if(recarregado){
-                console.log('Sim')
-                await  pegarJogosEstado(json, this);
-            }
-            else{
-                console.log('Nao')
-                this.setState({jogos: this.props.listJogosUsuario, isLoading: false})
-                this.bannerPrincipal(this.state.jogos[0]);
-            }
-        })
-        func();
-    }
-    bannerPrincipal(jogo){
+
+    async bannerPrincipal(jogo){
+        let jogoBanner  = jogo
+        jogoBanner.description = await pegarParametro(jogo.id, 'description')
         this.setState({
-            jogo_banner: jogo
+            jogo_banner: jogoBanner
         })
     }
     setas({ type, onClick, isEdge}){
@@ -111,30 +86,51 @@ class PaginaInicial extends React.Component{
             {width: 1, itemsToShow: 1},
             {width: 668, itemsToShow: 2},
             {width: 900, itemsToShow: 3},
-            {width: 1200, itemsToShow: 4}
+            {width: 1000, itemsToShow: 4},
+            {width: 1400, itemsToShow: 5}
         ]
         return (this.state.isLoading ? <Loading/> :
-            this.state.jogos.length == 0 ? 
-            <div><SemJogo />{console.log(this.state.jogos)}</div>
-            : 
-            <main className="container-fluid px-0 text-light">
-            <Suspense fallback={<p>Carregando</p>}>
-                <BannerPrincipal jogo={this.state.jogo_banner}/>
-            </Suspense>
-            <div className="paginas-inicio">
-                <h2>Minha Lista</h2>
+            <main className="">
                 <Suspense fallback={<p>Carregando</p>}>
-                    <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
-
-                        {this.state.jogos.map((jogo, chave)=>
-                            <div className="" onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} id_usuario={this.props.id_usuario} paginaUsuario={true} /></Suspense></div>
-                        )}
-                        
-                    </Carousel>
+                    <BannerPrincipal jogo={this.state.jogo_banner}/>
                 </Suspense>
-            </div>
+                <div className='paginas-inicio'>
+                    <h2 className='paginas-inicio-titulo'>Aclamados pela crítica</h2>
+                    <Suspense fallback={<p>Carregando</p>}>
+                        <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
 
-        </main>
+                            {this.state.jogosAclamados.map((jogo, chave)=>
+                                <div className="w-100" onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
+                            )}
+                            
+                        </Carousel>
+                    </Suspense>
+                </div>
+                <div className='paginas-inicio'>
+                    <h2 className='paginas-inicio-titulo'>Lançamentos</h2>
+                    <Suspense fallback={<p>Carregando</p>}>
+                        <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
+
+                            {this.state.jogosLancamento.map((jogo, chave)=>
+                                <div className="w-100" key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
+                            )}
+                            
+                        </Carousel>
+                    </Suspense>
+                </div>
+                <div className='paginas-inicio'>
+                    <h2 className='paginas-inicio-titulo'>Lançamento próximo</h2>
+                    <Suspense fallback={<p>Carregando</p>}>
+                        <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
+
+                            {this.state.futurosLancamentos.map((jogo, chave)=>
+                                <div className="w-100" key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
+                            )}
+                            
+                        </Carousel>
+                    </Suspense>
+                </div>
+            </main>
         );
     }
 }

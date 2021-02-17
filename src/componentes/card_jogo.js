@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SelecionarJogo } from './../actions/usuario';
+import { SelecionarJogo, RemoverJogos } from './../actions/usuario';
+import { scrollToTop } from './../javascript/funcoes';
 import { Load } from './../actions/paginaPrincipal';
 import { Link, withRouter } from 'react-router-dom';
 
 const mapDispatchToProps = () => {
     return{
         SelecionarJogo,
-        Load
+        Load,
+        RemoverJogos
     }
 }
 const estados = (state) => {
@@ -31,14 +33,13 @@ class BoxJogo extends React.Component{
         }
         this.adicionarAoUsuario = this.adicionarAoUsuario.bind(this);
         this.removerDoUsuario = this.removerDoUsuario.bind(this);
-        this.checarFavorito = this.checarFavorito.bind(this);
+        this.jogoSelecionado = this.jogoSelecionado.bind(this);
     }
     componentDidMount(){
         this._estaMontado = true;
         if(this._estaMontado){
             console.log(this.state.favorito)
             this.faixaEtariaCheck();
-            this.checarFavorito();
         }
     }
     componentWillUnmount(){
@@ -72,16 +73,7 @@ class BoxJogo extends React.Component{
             this.setState({cor_faixa: 'faixa_livre px-3'});
         }
     }
-    checarFavorito(){
-        setInterval(() => {
-            let jogos = this.props.jogosDoUsuario;
-            for(let i = 0; i < jogos.length; i++){
-                if(jogos[i].id === this.state.id_jogo){
-                    this.setState({favorito: true});
-                }
-            }
-        }, 1000)
-    }
+
     async adicionarAoUsuario(){
         let dado = {
             id_usuario: this.props.id_usuario,
@@ -94,7 +86,7 @@ class BoxJogo extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
+        let url = 'http://localhost:777/cadastroJogosUsuario';
         /*fetch(url, cabecalho);
         this.props.Load();
         this.setState({favorito: !this.state.favorito});*/
@@ -106,43 +98,28 @@ class BoxJogo extends React.Component{
         this.setState({favorito: !this.state.favorito})
     }
     async removerDoUsuario(){
-        let dado = {
-            id_usuario: this.props.id_usuario,
-            id_jogo: this.props.jogo.id
-        }
-        const cabecalho = {
-            method: "POST",
-            body: JSON.stringify(dado),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        let url = 'https://rest-api-gameflix.herokuapp.com/removerJogoUsuario';
-        console.log('removeu')
-        fetch(url, cabecalho)
-        if(!this.props.frontReload){
-            this.props.Load()
-        }
+        this.props.RemoverJogos(this.props.jogo.id)
         this.setState({favorito: !this.state.favorito})
     }
-    
+    jogoSelecionado(){
+        console.log(this.props.jogo)
+        this.props.SelecionarJogo(this.props.jogo)
+        scrollToTop()
+    }
     render(){
         return(
-            <div className={`game-card border-0 game-card-link mx-auto`}>
+            <div id={'boxJogo-' + this.props.jogo.id} className={`game-card border-0 game-card-link mx-auto`}>
                     <img className="game-card-img" src={this.props.jogo.background_image != null ? this.props.jogo.background_image : 'https://i.ytimg.com/vi/mnMEfY1fORg/maxresdefault.jpg'} alt="" />
                     <div className="game-card-info">
                         <div className="game-card-info-conteudo">
                             <ul className="d-flex px-0 mx-0 game-card-categorias">
                                 {this.state.categorias.map( (categoria, id) => 
-                                    <li className="mx-2" key={id}><a href="/categoria" className="text-light">{categoria['name']}</a></li>
+                                    <li className="mx-2" key={id}><a href="/categoria" className="text-light" rel="noreferrer">{categoria['name'] }</a></li>
                                 )}
                             </ul>
                             <h4 className="game-card-nome text-center font-weight-bold text-uppercase">{this.props.jogo.name}</h4>
-                            <div className={`game-card-faixa font-weight-bold btn ${this.state.cor_faixa}`}><span>{this.state.faixa}</span></div>
-                            {this.props.paginaUsuario ? 
-                                <div className="game-card-lista font-weight-bold btn" onClick={this.removerDoUsuario}><span>x</span></div>
-                            :(this.state.favorito ? '': <div className="game-card-lista font-weight-bold btn" onClick={this.adicionarAoUsuario}><span>+</span></div>)}
-                            <Link as={Link} to='/jogo' onClick={() => this.props.SelecionarJogo(this.props.jogo)} className="btn border-success game-card-jogar w-25 font-weight-bold"><span>INFO</span></Link>
+                            <div className={`game-card-faixa font-weight-bold btn ${this.state.cor_faixa}`} onClick={this.props.Load}><span>{this.state.faixa}</span></div>
+                            <Link as={Link} to='/jogo' onClick={() => this.jogoSelecionado()} className="btn game-card-jogar w-25 font-weight-bold"><span>INFO</span></Link>
                         </div>
                     </div>
                 </div>

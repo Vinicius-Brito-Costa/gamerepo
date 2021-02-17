@@ -54,7 +54,7 @@ class PaginaPesquisa extends React.Component{
     }
     render(){
         return this.state.jogosRenderizados.length > 0 ? (
-            <main className="main-body px-0 text-light mx-auto">
+            <main className="main-body-loading px-0 text-light mx-auto">
                 <ListaJogos jogos={this.state.jogosRenderizados[this.state.paginaAtual]} index={this.state.paginaAtual}/>
                 <div className="pesquisa-selecao-paginas text-center">
                     <div className='d-block'>

@@ -1,4 +1,4 @@
-let id_usuario = 1
+let id_usuario = null
 export const usuario = (state = id_usuario, action) =>{
     switch(action.type){
         default:
@@ -29,4 +29,39 @@ export const jogoSelecionado = (state = jogoAtual, action) => {
             return jogoAtual;
     }
 }
-export default usuario;
+let devAtual = []
+export const devSelecionado = (state = devAtual, action) => {
+    switch(action.type){
+        default:
+            return state;
+        case 'SELECIONAR_DEV':
+            devAtual = action.payload;
+            return devAtual;
+    }
+}
+let jogosRemovidos = []
+export const JogosRemovidos = (state = jogosRemovidos, action) => {
+    switch(action.type){
+        default:
+            return state;
+        case 'JOGOS_REMOVIDOS':
+            jogosRemovidos.push(action.payload);
+            return jogosRemovidos;
+        case 'RESET_JOGOS_REMOVIDOS':
+            jogosRemovidos = [];
+            return jogosRemovidos;
+    }
+}
+let jogosAdicionados = []
+export const JogosAdicionados = (state = jogosAdicionados, action) => {
+    switch(action.type){
+        default:
+            return state;
+        case 'JOGOS_ADICIONADOS':
+            jogosAdicionados.push(action.payload);
+            return jogosAdicionados;
+        case 'RESET_JOGOS_ADICIONADOS':
+            jogosAdicionados = [];
+            return jogosAdicionados;
+    }
+}

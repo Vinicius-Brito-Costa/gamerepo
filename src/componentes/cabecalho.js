@@ -78,7 +78,7 @@ class Componente extends React.Component{
         this.setState({resultadoDePesquisaAtivo: true});
     }
     desativarResultadoPesquisa = (evento) => {
-    if(evento.target.classList != undefined){
+    if(evento.target.classList !== undefined){
         let classe = evento.target.classList;
         if(!classe.contains('cabecalho-pesquisa-item') && !classe.contains('cabecalho-procura')){
             this.setState({resultadoDePesquisaAtivo: false});
@@ -110,7 +110,7 @@ class Componente extends React.Component{
         return(
             <Router>
                 <nav className="position-fixed w-100 navbar navbar-expand-lg navbar-dark" id="cabecalho-fundo">
-                    <Link className="navbar-brand px-0" as={Link} to='/'><img className="Logo py-2" src={require('../imagens/Netflix-Logo.png').default} alt=""/></Link>
+                    <Link className="navbar-brand px-0" as={Link} to='/'><img className="Logo py-2" src={require('../imagens/logo.png').default} alt=""/></Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                       <span className="navbar-toggler-icon"></span>
                     </button>
@@ -118,19 +118,10 @@ class Componente extends React.Component{
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item ml-3">
-                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/'>Início</Link>
+                                <Link className="text-light nav-link cabecalho-links" as={Link} to='/'>Início</Link>
                             </li>
                             <li className="nav-item ml-3">
-                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/fila'>Fila</Link>
-                            </li>
-                            <li className="nav-item ml-3">
-                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/completos'>Completos</Link>
-                            </li>
-                            <li className="nav-item ml-3">
-                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/bombando'>Bombando</Link>
-                            </li>
-                            <li className="nav-item ml-3">
-                                <Link className="text-light nav-link cabecalho-links"as={Link} to='/lista'>Minha&nbsp;lista</Link>
+                                <Link className="text-light nav-link cabecalho-links" as={Link} to='/minhaLista'>Minha&nbsp;lista</Link>
                             </li>
                         </ul>
                         <div className="cabecalho-secao-pesquisa my-2 my-lg-0" id="cabecalho-secao-pesquisa">
@@ -140,7 +131,7 @@ class Componente extends React.Component{
                             {this.state.resultadoDePesquisaAtivo ? <div className="cabecalho-pesquisa-resultado" id="cabecalho-pesquisa-resultado">
                                 {this.state.jogosEncontrados.map((valor, index) => {
                                         if(valor){
-                                            return <Link as={Link} to="/jogo" onClick={() => this.irParaPaginaJogo(valor)}  key={index} className=" btn cabecalho-pesquisa-item" style={{display: 'block'}}>{valor.name} <span className="cabecalho-pesquisa-add">+</span></Link>
+                                            return <Link as={Link} to="/jogo" onClick={() => this.irParaPaginaJogo(valor)}  key={index} className=" btn cabecalho-pesquisa-item" style={{display: 'block'}}>{valor.name} <span className="cabecalho-pesquisa-add">-&gt;</span></Link>
                                         }
                                         else{ return null }
                                     }
