@@ -28,6 +28,7 @@ class PaginaLogin extends React.Component{
         const cabecalho = {
             method: "POST",
             body: JSON.stringify(dado),
+            credentials: 'https://rest-api-gameflix.herokuapp.com',
             headers: {
                 'Content-Type': 'application/json'
             }
