@@ -100,7 +100,7 @@ class PaginaJogo extends React.Component{
             }
         }
     }
-    async adicionarAoUsuario(){
+    adicionarAoUsuario(){
         let dado = {
             id_jogo: this.props._jogoSelecionado.id
         }
@@ -113,9 +113,7 @@ class PaginaJogo extends React.Component{
             }
         };
         let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
-        console.log('cadastrou')
-        setTimeout(() => console.log('intervalo'), 500)
-        await fetch(url, cabecalho)
+        fetch(url, cabecalho);
         if(!this.props.frontReload){
             this.props.Load()
         }
