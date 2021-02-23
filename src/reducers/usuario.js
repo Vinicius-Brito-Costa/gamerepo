@@ -1,11 +1,15 @@
-let id_usuario = null
-export const usuario = (state = id_usuario, action) =>{
+let logado = false
+export const Logado = (state = logado, action) => {
     switch(action.type){
         default:
             return state
-        case 'ID_USUARIO':
-            let id_usuario = action.payload ? action.payload : 1
-            return id_usuario;
+        case 'LOGAR':
+            logado = true;
+            return logado;
+        case 'DESLOGAR':
+            document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+            logado = false;
+            return logado;
     }
 }
 let lista = []

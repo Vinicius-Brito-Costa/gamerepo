@@ -11,10 +11,8 @@ export async function pegarDev(id) {
 
 export async function pegarJogosEstado(jogos, estado) {
     let json = [];
-    console.log('chamou pegar jogos')
     for (var i = 0; i < jogos.length; i++) {
         let resultadoJson = await fetchGame(jogos[i]['id_jogo']);
-        console.log("ID: " + jogos[i]['id_jogo'] + "\n    Nome: " + resultadoJson.name)
         json.push(resultadoJson);
         if (i === 0) {
             estado.bannerPrincipal(json[0]);
@@ -25,7 +23,6 @@ export async function pegarJogosEstado(jogos, estado) {
                 jogos: json,
                 isLoading: false
             })
-            console.log(estado.state.isLoading)
         }
         if (!estado._estaMontado) {
             estado.setState({
@@ -46,7 +43,7 @@ export async function pegarJogos(jogos, estado) {
     for (var i = 0; i < jogos.length; i++) {
         let resultado = await fetch(`https://api.rawg.io/api/games/${jogos[i]['id_jogo']}`);
         let resultadoJson = await resultado.json();
-        console.log("ID: " + jogos[i]['id_jogo'] + "\n    Nome: " + resultadoJson.name)
+        // console.log("ID: " + jogos[i]['id_jogo'] + "\n    Nome: " + resultadoJson.name)
         json.push(resultadoJson);
         if (i % 3 === 0 && i !== 0) {
             estado.setState({
@@ -230,7 +227,6 @@ export async function jogosAclamados(numeroJogos, estado) {
                                 jogosAclamados: jogos,
                                 isLoading: false
                             })
-                            console.log(estado.state.isLoading)
                         }
                         if (!estado._estaMontado) {
                             estado.setState({
@@ -246,16 +242,15 @@ export async function jogosAclamados(numeroJogos, estado) {
                 }
                 if (json.next !== null && jogos.length < numeroJogos) {
                     pages += 1;
-                    console.log(pages)
                 } else {
                     continuar = false;
                 }
             })
 
     }
-    console.log(jogos)
+    let listaRandomica = jogos.sort(() => Math.random() - 0.5)
     estado.setState({
-        jogosAclamados: jogos,
+        jogosAclamados: listaRandomica,
         isLoading: false
     })
     //return jogos;
@@ -280,14 +275,12 @@ export async function jogosLancamento(numeroJogos, estado) {
     if(mes < 10) mes = '0' + mes.toString();
     if(dia < 10) dia = '0' + dia.toString();
     let desde = ano + '-' + mes + '-' + dia
-    console.log(hoje)
-    console.log(desde)
     let pages = 1;
     let continuar = true;
     let jogos = [];
     while (continuar) {
         const url = `https://api.rawg.io/api/games?dates=${desde},${hoje}&ordering=-added&page=${pages}`;
-        console.log(url)
+    
         await fetch(url)
             .then((resultado) => {
                 let json = resultado.json();
@@ -298,14 +291,15 @@ export async function jogosLancamento(numeroJogos, estado) {
                     if (json.results[i].background_image !== null) {
                         jogos.push(json.results[i]);
                         if (i % 3 === 0 && i !== 0) {
+                            let listaRandomica = jogos.sort(() => Math.random() - 0.5)
                             estado.setState({
-                                jogosLancamento: jogos
+                                jogosLancamento: listaRandomica
                             })
-                            console.log(estado.state.isLoading)
                         }
                         if (!estado._estaMontado) {
+                            let listaRandomica = jogos.sort(() => Math.random() - 0.5)
                             estado.setState({
-                                jogosLancamento: jogos
+                                jogosLancamento: listaRandomica
                             })
                             break;
                         }
@@ -316,16 +310,15 @@ export async function jogosLancamento(numeroJogos, estado) {
                 }
                 if (json.next !== null && jogos.length < numeroJogos) {
                     pages += 1;
-                    console.log(pages)
                 } else {
                     continuar = false;
                 }
             })
 
     }
-    console.log(jogos)
+    let listaRandomica = jogos.sort(() => Math.random() - 0.5)
     estado.setState({
-        jogosLancamento: jogos
+        jogosLancamento: listaRandomica
     })
     //return jogos;
 }
@@ -360,14 +353,15 @@ export async function futurosLancamentos(numeroJogos, estado) {
                             estado.bannerPrincipal(jogo)
                         }
                         if (i % 3 === 0 && i !== 0) {
+                            let listaRandomica = jogos.sort(() => Math.random() - 0.5)
                             estado.setState({
-                                futurosLancamentos: jogos
+                                futurosLancamentos: listaRandomica
                             })
-                            console.log(estado.state.isLoading)
                         }
                         if (!estado._estaMontado) {
+                            let listaRandomica = jogos.sort(() => Math.random() - 0.5)
                             estado.setState({
-                                futurosLancamentos: jogos
+                                futurosLancamentos: listaRandomica
                             })
                             break;
                         }
@@ -378,15 +372,14 @@ export async function futurosLancamentos(numeroJogos, estado) {
                 }
                 if (json.next !== null && jogos.length < numeroJogos) {
                     pages += 1;
-                    console.log(pages)
                 } else {
                     continuar = false;
                 }
             })
 
     }
-    console.log(jogos)
+    let listaRandomica = jogos.sort(() => Math.random() - 0.5)
     estado.setState({
-        futurosLancamentos: jogos
+        futurosLancamentos: listaRandomica
     })
 }

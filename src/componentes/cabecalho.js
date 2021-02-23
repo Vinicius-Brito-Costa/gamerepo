@@ -4,11 +4,17 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { procurarJogo, selecionarJogo } from './apiRAWG';
 import { connect } from 'react-redux';
 import { pesquisa } from './../actions/pesquisa';
-import { SelecionarJogo } from './../actions/usuario';
+import { SelecionarJogo, Deslogar } from './../actions/usuario';
 
+const estados = (state) =>{
+    return {
+        logado: state.logado
+    }
+}
 
 const mapDispatchToProps = () =>{
     return {
+        Deslogar,
         pesquisa,
         SelecionarJogo
     }
@@ -28,22 +34,21 @@ class Componente extends React.Component{
             previewNome: '',
             resultadoDePesquisaAtivo: false
         }
-        /*this.procurar = this.procurar.bind(this);
-        this.selecionar = this.selecionar.bind(this);
-        this.pesquisarAction = this.pesquisarAction.bind(this);
-        this.ativarResultadoPesquisa = this.ativarResultadoPesquisa.bind(this);*/
+        this.logoff = this.logoff.bind(this);
     }
     componentDidMount() {
         window.addEventListener('scroll', this.checarScroll);
         document.getElementById('cabecalho-barra-pesquisa').addEventListener('keyup', this.checarEnterPesquisa);
-        document.getElementById('cabecalho-barra-pesquisa').addEventListener('focus', this.ativarResultadoPesquisa);
-        document.addEventListener('click', this.desativarResultadoPesquisa);
+            document.getElementById('cabecalho-barra-pesquisa').addEventListener('focus', this.ativarResultadoPesquisa);
+            document.addEventListener('click', this.desativarResultadoPesquisa);
     }
     componentWillUnmount(){
         window.removeEventListener('scroll', this.checarScroll);
-        document.getElementById('cabecalho-barra-pesquisa').removeEventListener('keyup', this.checarEnterPesquisa);
-        document.getElementById('cabecalho-barra-pesquisa').removeEventListener('focus', this.ativarResultadoPesquisa);
-        document.removeEventListener('click', this.desativarResultadoPesquisa);
+        if(this.props.logado){
+            document.getElementById('cabecalho-barra-pesquisa').removeEventListener('keyup', this.checarEnterPesquisa);
+            document.getElementById('cabecalho-barra-pesquisa').removeEventListener('focus', this.ativarResultadoPesquisa);
+            document.removeEventListener('click', this.desativarResultadoPesquisa);
+        }
     }
     checarScroll = () => {
         let cabecalho = document.querySelector("#cabecalho-fundo")
@@ -106,6 +111,10 @@ class Componente extends React.Component{
         this.pesquisarAction();
         this.clicarNoBotaoPesquisa();
     }
+    logoff(){
+        this.props.Deslogar();
+        window.location.href = '/';
+    }
     render(){
         return(
             <Router>
@@ -116,14 +125,20 @@ class Componente extends React.Component{
                     </button>
 
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav mr-auto">
+                        <ul className={`navbar-nav ${this.props.logado ? 'mr-auto' : 'ml-auto'}`}>
                             <li className="nav-item ml-3">
+                            {this.props.logado ? 
                                 <Link className="text-light nav-link cabecalho-links" as={Link} to='/'>Início</Link>
+                                :<Link className="text-light cabecalho-links float-right btn-entrar" as={Link} to='/login'><span>Entrar</span></Link>}
+                                
                             </li>
                             <li className="nav-item ml-3">
+                                {this.props.logado ? 
                                 <Link className="text-light nav-link cabecalho-links" as={Link} to='/minhaLista'>Minha&nbsp;lista</Link>
+                                :''}
                             </li>
                         </ul>
+                        <i className={(this.props.logado ? 'd-flex': 'd-none')} >
                         <div className="cabecalho-secao-pesquisa my-2 my-lg-0" id="cabecalho-secao-pesquisa">
                             <input type="hidden" name='id_jogo' />
                             <input className="form-control  cabecalho-procura" id="cabecalho-barra-pesquisa" autoComplete="off" onChange={ this.procurar } placeholder="Nome do jogo" aria-label="Search"/>
@@ -138,7 +153,11 @@ class Componente extends React.Component{
                                 )}
                             </div> : <div className="cabecalho-pesquisa-resultado" id="cabecalho-pesquisa-resultado"></div>}
                         </div>
-                        <Link id="pesquisar" as={Link} to="/pesquisa" onClick={() => this.pesquisarAction()} ><button className="btn cabecalho-procura-botao" id="cabecalho-submit">Procurar</button></Link>
+                        <Link className='my-auto' id="pesquisar" as={Link} to="/pesquisa" onClick={() => this.pesquisarAction()} ><button className="btn cabecalho-procura-botao" id="cabecalho-submit">Procurar</button></Link>
+                        
+                        </i>
+                        
+                        {window.location.pathname === '/minhaLista' ? <button className='btn ml-1 btn-danger btn-deslogar d-flex' onClick={this.logoff}>Deslogar</button> :''}
                     </div>
                 </nav>
                 <Rotas />
@@ -147,4 +166,4 @@ class Componente extends React.Component{
     }
 }
 
-export default connect (null, mapDispatchToProps())(Componente);
+export default connect (estados, mapDispatchToProps())(Componente);

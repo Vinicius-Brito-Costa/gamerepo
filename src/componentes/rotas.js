@@ -3,7 +3,7 @@ import {
     Switch,
     Route
 } from 'react-router-dom';
-
+import { Logar } from './../actions/usuario';
 import Index from './../paginas/paginaInicial';
 import Fila from './../paginas/fila';
 import CadastroJogos from './../paginas/cadastroJogos';
@@ -13,8 +13,10 @@ import Dev from './../paginas/dev';
 import MinhaLista from './../paginas/minhaLista';
 import Login from './../paginas/login';
 import Cadastro from './../paginas/cadastro';
-import { connect } from 'react-redux';
+import LandingPage from './../paginas/landing';
 
+import { connect } from 'react-redux';
+import Cabecalho from './cabecalhoBase';
 const estados = (state) => {
     return {
         id_usuario: state.id_usuario,
@@ -22,30 +24,50 @@ const estados = (state) => {
     }
 }
 
+const funcoes = () => {
+    return {
+        Logar
+    }
+}
 
 class Rotas extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+            logado: false
+        }
+        this.checkLogado = this.checkLogado.bind(this);
         this.roteadorComponente = this.roteadorComponente.bind(this);
         this.roteadorRota = this.roteadorRota.bind(this);
     }
+    componentDidMount(){
+        this.checkLogado()
+    }
+    async checkLogado(){
+        let resultado = await fetch('http://localhost:777', Cabecalho());
+        if(resultado.status === 401){
+            this.setState({logado: false});
+        }
+        else{
+
+            this.setState({logado: true});
+            this.props.Logar();
+        }
+    }
     roteadorRota(rota){
-        if(this.props.id_usuario === null && rota !== '/login' && rota !== '/cadastro'){
+        if(!this.state.logado && rota !== '/login' && rota !== '/cadastro'){
             return '/login';
         }
-        else if(this.props.id_usuario !== null && (rota === '/cadastro' || rota === '/login')){
-            console.log(this.props.id_usuario)
-            console.log(rota)
+        else if(this.state.logado && (rota === '/cadastro' || rota === '/login')){
             return '/'
         }
         return rota;
     }
     roteadorComponente(comp){
-        console.log(this.props.id_usuario)
-        if(this.props.id_usuario === null && comp !== Login && comp !== Cadastro){
+        if(!this.state.logado && comp !== Login && comp !== Cadastro && comp !== LandingPage){
             return Login;
         }
-        else if(this.props.id_usuario !== null && (comp === Cadastro || comp === Login)){
+        else if(this.state.logado && ((comp === Cadastro || comp === Login) || comp === LandingPage)){
             return Index
         }
         return comp;
@@ -61,10 +83,10 @@ class Rotas extends React.Component{
                 <Route path={"/pesquisa"} component={this.roteadorComponente(Pesquisa)} />
                 <Route path={"/cadastroJogos"} component={this.roteadorComponente(CadastroJogos)} />
                 <Route path={"/fila"} component={this.roteadorComponente(Fila)} />
-                <Route path="/" component={this.roteadorComponente(Index)} />
+                <Route path="/" component={this.roteadorComponente(LandingPage)} />
             </Switch>
         );
     }
 }
 
-export default connect(estados)(Rotas);
+export default connect(estados, funcoes())(Rotas);

@@ -26,7 +26,7 @@ class Resultados extends React.Component{
             <main className="lista-de-jogos-main w-100 row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 mx-auto px-0 py-4">
                 {this.state.jogos.map((jogo, index) => 
                     
-                    <div className="w-100 mt-2" key={index}><CardJogo jogo={jogo} id_usuario={this.props.id_usuario}/></div>
+                    <div className="box-game-card mt-2" key={index}><CardJogo jogo={jogo} id_usuario={this.props.id_usuario}/></div>
                 )}
             </main>
         );

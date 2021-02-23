@@ -8,6 +8,13 @@ import ListaDevs from './../componentes/lista_devs';
 import { SelecionarJogo, AdicionarJogos, RemoverJogos } from './../actions/usuario';
 import { Load } from './../actions/paginaPrincipal';
 import ListaJogos from '../componentes/lista_jogos';
+let token = 'none'
+if (document.cookie.split(';').some((item) => item.trim().startsWith('token='))) {
+    token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+}
+else if(document.cookie.split('token=')){
+    token = document.cookie.split('token=')[1];
+}
 
 const mapDispatchToProps = () => {
     return{
@@ -95,13 +102,13 @@ class PaginaJogo extends React.Component{
     }
     async adicionarAoUsuario(){
         let dado = {
-            id_usuario: this.props.id_usuario,
             id_jogo: this.props._jogoSelecionado.id
         }
         const cabecalho = {
             method: "POST",
             body: JSON.stringify(dado),
             headers: {
+                "token": token,
                 'Content-Type': 'application/json'
             }
         };
@@ -125,6 +132,7 @@ class PaginaJogo extends React.Component{
             method: "POST",
             body: JSON.stringify(dado),
             headers: {
+                "token": token,
                 'Content-Type': 'application/json'
             }
         };

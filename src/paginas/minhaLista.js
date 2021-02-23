@@ -1,17 +1,14 @@
 import React, { lazy, Suspense } from 'react';
-import { consts } from 'react-elastic-carousel';
 import { pegarJogosEstado,  } from '../componentes/apiRAWG';
 import { connect } from 'react-redux';
 import { AtualizarListaJogos, ResetRemoverJogos, ResetAdicionarJogos } from '../actions/usuario'
 import { Loaded, Load } from '../actions/paginaPrincipal'
 import Loading from '../componentes/placeholder/loading';
 import SemJogo from '../componentes/placeholder/usuarioSemJogo';
+import Cabecalho from '../componentes/cabecalhoBase';
 
-
-const Carousel = lazy(() => import('react-elastic-carousel'));
 const BannerPrincipal = lazy(() => import('../componentes/banner_principal'));
 const CardJogo = lazy(() => import('../componentes/card_jogo'));
-
 
 const mapDispatchToProps = () =>{
     return {
@@ -62,23 +59,11 @@ class MinhaLista extends React.Component{
         this._estaMontado = false;
     }
     pegarJogosDoUsuario(){
-        let dado = {
-            id_usuario: this.props.id_usuario
-        }
-        const cabecalho = {
-            method: "POST",
-            body: JSON.stringify(dado),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-        console.log(this.props.reload)
-        console.log(cabecalho.body);
         let func = (async () => {
             let recarregado = this.props.reload;
             console.log(recarregado)
             this.props.Loaded();
-            let resultado = await fetch('http://localhost:777', cabecalho)
+            let resultado = await fetch('http://localhost:777', Cabecalho())
             let json = await resultado.json();
             if(recarregado){
                 console.log('Sim')
@@ -97,47 +82,29 @@ class MinhaLista extends React.Component{
             jogo_banner: jogo
         })
     }
-    setas({ type, onClick, isEdge}){
-        let setaEsqOn = require('../imagens/carousel/setaEsqOn.svg').default;
-        let setaEsqOff = require('../imagens/carousel/setaEsqOff.svg').default;
-        let setaDirOn = require('../imagens/carousel/setaDirOn.svg').default;
-        let setaDirOff = require('../imagens/carousel/setaDirOff.svg').default;
-        const ponteiro = type === consts.PREV ? (isEdge ? setaEsqOff : setaEsqOn) : (isEdge ? setaDirOff : setaDirOn);
-        return (
-            <button type="button" onClick={onClick} disabled={isEdge} className="carousel-botao">
-                <img src={ponteiro} alt=""/>
-            </button>
-        )
-    }
+
     render(){
-        const breakPoints = [
-            {width: 1, itemsToShow: 1},
-            {width: 668, itemsToShow: 2},
-            {width: 900, itemsToShow: 3},
-            {width: 1200, itemsToShow: 4}
-        ]
+
         return (this.state.isLoading ? <Loading/> :
             this.state.jogos.length === 0 ? 
             <div><SemJogo />{console.log(this.state.jogos)}</div>
             : 
             <main className="container-fluid px-0 text-light">
-            <Suspense fallback={<p>Carregando</p>}>
-                <BannerPrincipal jogo={this.state.jogo_banner}/>
-            </Suspense>
-            <div className="paginas-inicio">
-                <h2 className='paginas-inicio-titulo'>Minha Lista</h2>
                 <Suspense fallback={<p>Carregando</p>}>
-                    <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
-
-                        {this.state.jogos.map((jogo, chave)=>
-                            <div className="w-100" onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} paginaUsuario={true} /></Suspense></div>
-                        )}
-                        
-                    </Carousel>
+                    <BannerPrincipal jogo={this.state.jogo_banner}/>
                 </Suspense>
-            </div>
+                <div className="paginas-inicio">
+                    <h2 className='paginas-inicio-titulo'>Minha Lista</h2>
+                    <Suspense fallback={<p>Carregando</p>}>
+                        <main className="lista-de-jogos-main w-100 row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 mx-auto px-0 py-4">
+                            {this.state.jogos.map((jogo, chave)=>
+                                <div className="box-game-card my-1" style={{height: '120px'}} onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} paginaUsuario={true} /></Suspense></div>
+                            )}
+                        </main>
+                    </Suspense>
+                </div>
 
-        </main>
+            </main>
         );
     }
 }

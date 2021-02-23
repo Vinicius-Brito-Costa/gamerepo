@@ -1,11 +1,24 @@
 import mysql from 'mysql2';
+import jwt from 'jsonwebtoken';
+const SECRET = 'endeavor';
 let log = console.log;
+
+
+function verificarJWT(req, res, next){
+    const token = req.headers['x-access-token'];
+    jwt.verify(token, SECRET, (erro, decoded) => {
+        if(erro) return res.status(401).end();
+
+        req.id_usuario = decoded.id_usuario;
+        next();
+    })
+}
 export function conexao(msg = '') {
-    const bd = process.env.BD || 'heroku_ba01ff1f594b282';
+    const bd = process.env.BD;
     const con = mysql.createConnection({
-        host: process.env.HOST || 'us-cdbr-east-03.cleardb.com',
-        user: process.env.USER || 'beb6a8632b1042',
-        password: process.env.PASSWORD || '16a70633',
+        host: process.env.HOST,
+        user: process.env.USER,
+        password: process.env.PASSWORD,
         database: bd
     });
 
@@ -43,10 +56,10 @@ const checagemUsuario = (usuario) => {
         let sql2 = 'SELECT * FROM cadastro WHERE usuario = ?;';
         conexao().query(sql2, [usuario], (erro, resultado) => {
             if (erro) {
-                log('Erro ao verificar os usuario.' + erro);
+                log('Erro ao verificar o usuario.' + erro);
                 reject('ixi')
             } else if (resultado.length > 0) {
-                log(`Cadastro não realizado. ${usuario} já existe.`)
+                log(`${usuario} existe...`)
                 resolve(false);
             } else {
                 resolve(true);
@@ -56,7 +69,7 @@ const checagemUsuario = (usuario) => {
     })
 }
 
-export async function login(post, resposta) {
+export async function login(post, resposta, funcao = () => {}) {
     checagemUsuario(post.usuario)
         .then((resultadoUsuario) => {
             let usuarioExiste = !resultadoUsuario;
@@ -67,21 +80,25 @@ export async function login(post, resposta) {
                         log('Erro ao checar usuario existente.' + erro);
                     }
                     if (resultado.length > 0) {
-                        let id = JSON.stringify(resultado);
-                        //resposta.send(resultado[0].id_conta);
-                        log(resultado[0].usuario)
+                        log('Senha correta...')
                         log(`${post.usuario} logado com sucesso.`)
-                        resposta.send({logar: true, id: resultado.id_conta})
+                        funcao(resultado[0].id_conta);
                     } 
                     else {
-                        log('Senha invalida.')
-                        resposta.send({logar: true, usuario: true, senha: false})
+                        log('Senha invalida...')
+                        resposta.send({
+                            usuario: true,
+                            senha: false
+                        })
                     }
                 });
             }
             else{
-                log(`${post.usuario} não existe`)
-                resposta.send({logar: true, usuario: false, senha: false})
+                log(`${post.usuario} não existe.`)
+                resposta.send({
+                    usuario: false,
+                    senha: false
+                })
             }
         })
 
@@ -99,8 +116,9 @@ export function cadastro(post, resposta) {
                 })
                 .then((result) => {
                     if (!result.usuario || !result.email) {
-                        log(result);
-                    } else {
+                        resposta.send({usuario: result.usuario, email: result.email});
+                    } 
+                    else {
                         conexao('Cadastrando usuario.').query(sql, [post.usuario, post.senha, post.email], (erro, resultado) => {
                             if (erro) {
                                 log('Erro ao cadastrar usuario.' + erro);
@@ -113,7 +131,7 @@ export function cadastro(post, resposta) {
 }
 
 export function pegarJogosDoUsuario(post, resposta) {
-    conexao('Pegar jogos do usuario.').query("SELECT * FROM  lista_de_jogos WHERE id_usuario = ?;", [post.id_usuario], (erro, resultado) => {
+    conexao('Pegar jogos do usuario.').query("SELECT (id_jogo) FROM  lista_de_jogos WHERE id_usuario = ?;", [post.id_usuario], (erro, resultado) => {
         resposta.send(JSON.stringify(resultado));
     });
 }

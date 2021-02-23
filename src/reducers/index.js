@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import { usuario, listJogosUsuario, jogoSelecionado, devSelecionado, JogosAdicionados, JogosRemovidos } from './usuario';
+import { listJogosUsuario, jogoSelecionado, devSelecionado, JogosAdicionados, JogosRemovidos, Logado } from './usuario';
 import { reload } from './pagina_principal';
 import { pesquisa } from './pesquisa';
 const reducers = combineReducers({
-    id_usuario: usuario,
+    logado: Logado,
     listJogosUsuario: listJogosUsuario,
     jogoSelecionado: jogoSelecionado,
     devSelecionado: devSelecionado,

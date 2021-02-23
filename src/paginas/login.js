@@ -1,12 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { MudarIdUsuario } from './../actions/usuario';
-
-const funcoes = () => {
-    return {
-        MudarIdUsuario
-    }
-}
+import { caracteresMinimos } from './../javascript/validacao';
 
 class PaginaLogin extends React.Component{
     constructor(props){
@@ -16,9 +9,18 @@ class PaginaLogin extends React.Component{
             senha: ''
         }
         this.Logar = this.Logar.bind(this);
+        this.verificarClasse = this.verificarClasse.bind(this);
     }
     async Logar(event){
         event.preventDefault();
+        let minimo = 6;
+
+        if(!caracteresMinimos(minimo, this.state.senha)){
+            document.getElementById('senha').classList.add('pagina-login-input-errado');
+            alert('A senha contém no minimo 6 caracteres.')
+            return
+        }
+
         const dado = {
             usuario: this.state.usuario,
             senha: this.state.senha
@@ -30,13 +32,24 @@ class PaginaLogin extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = 'http://localhost:777/login';
+        let url = '/login';
         let resultado = await fetch(url, cabecalho);
-        let json = await resultado.json()
-        console.log(json);
-        if(json.logar){
-            this.props.MudarIdUsuario(json.id)
-            //window.Location.href = '/'
+        if(resultado.usuario && resultado.senha){
+            window.location.href = '/'
+        }
+        else if(!resultado.usuario){
+            document.getElementById('usuario').classList.add('pagina-login-input-errado');
+            alert('Usuario inválido.')
+        }
+        else if(!resultado.senha){
+            document.getElementById('senha').classList.add('pagina-login-input-errado');
+            alert('Senha inválida.')
+        }
+        
+    }
+    verificarClasse(e){
+        if(e.target.classList.contains('pagina-login-input-errado')){
+            e.target.classList.remove('pagina-login-input-errado')
         }
     }
     render(){
@@ -44,14 +57,14 @@ class PaginaLogin extends React.Component{
             <main className="pagina-login-main pagina-login-background">
                 <div className='pagina-login-formulario-fundo'>
                     
-                    <form className='pagina-login-formulario' onSubmit={this.Logar}>
+                    <form className='pagina-login-formulario' id='pagina-login-form' onSubmit={this.Logar}>
                     <h2 className='text-center'>Login</h2>
                         <label htmlFor='usuario'>Usuario:</label>
-                        <input type='text' className='form-control pagina-login-input mb-2' name='usuario' id='usuario' onChange={(e) => this.setState({usuario: e.target.value})}/>
+                        <input type='text' className='form-control pagina-login-input mb-2' name='usuario' id='usuario' onClick={(e) => this.verificarClasse(e)} onChange={(e) => this.setState({usuario: e.target.value})} required/>
                         <label htmlFor='senha'>Senha:</label>
-                        <input type='password' className='form-control pagina-login-input' name='senha' id='senha' onChange={(e) => this.setState({senha: e.target.value})}/>
+                        <input type='password' className='form-control pagina-login-input' name='senha' id='senha' onClick={(e) => this.verificarClasse(e)} onChange={(e) => this.setState({senha: e.target.value})} required/>
                         <button type='submit' className='btn pagina-login-btn-entrar'>ENTRAR</button>
-                        <div className='pagina-login-link-cadastro'><span>Ainda não possui um cadastro? </span><a href='/cadastro'>Clique aqui.</a></div>
+                        <div className='pagina-login-link-cadastro text-center'><span>Ainda não possui um cadastro? </span><a href='/cadastro'>Clique&nbsp;aqui.</a></div>
                     </form>
                 </div>
                 <div className="pagina-login-fade"></div>
@@ -59,4 +72,4 @@ class PaginaLogin extends React.Component{
         );
     }
 }
-export default connect(null, funcoes())(PaginaLogin);
+export default PaginaLogin;

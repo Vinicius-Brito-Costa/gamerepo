@@ -40,16 +40,16 @@ class PaginaInicial extends React.Component{
             futurosLancamentos: [],
             setas: true,
             jogo_banner: [],
-            isLoading: true
+            isLoading: true,
         }
         this.bannerPrincipal = this.bannerPrincipal.bind(this);
     }
     componentDidMount(){
         this._estaMontado = true;
         if(this._estaMontado){
-            jogosAclamados(10, this);
-            jogosLancamento(10, this);
-            futurosLancamentos(10, this);
+            jogosAclamados(20, this);
+            jogosLancamento(20, this);
+            futurosLancamentos(20, this);
         }
     }
     componentDidUpdate(){
@@ -100,7 +100,7 @@ class PaginaInicial extends React.Component{
                         <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
 
                             {this.state.jogosAclamados.map((jogo, chave)=>
-                                <div className="w-100" onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
+                                <div className="box-game-card" onClick={() => this.bannerPrincipal(jogo)} key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
                             )}
                             
                         </Carousel>
@@ -112,7 +112,7 @@ class PaginaInicial extends React.Component{
                         <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
 
                             {this.state.jogosLancamento.map((jogo, chave)=>
-                                <div className="w-100" key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
+                                <div className="box-game-card" key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
                             )}
                             
                         </Carousel>
@@ -124,7 +124,7 @@ class PaginaInicial extends React.Component{
                         <Carousel breakPoints={breakPoints} renderArrow={this.setas} enableTilt={false} showArrows={this.state.setas} onResize={(currentBreakPoint) => currentBreakPoint.width <= 1000 ? this.setState({setas: false}) : this.setState({setas: true})} disableArrowsOnEnd={true} focusOnSelect={true}>
 
                             {this.state.futurosLancamentos.map((jogo, chave)=>
-                                <div className="w-100" key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
+                                <div className="box-game-card" key={chave}><Suspense fallback={<p>Carregando</p>}><CardJogo jogo={jogo} index={chave} id_usuario={this.props.id_usuario} /></Suspense></div>
                             )}
                             
                         </Carousel>

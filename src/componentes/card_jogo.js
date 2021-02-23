@@ -4,6 +4,7 @@ import { SelecionarJogo, RemoverJogos } from './../actions/usuario';
 import { scrollToTop } from './../javascript/funcoes';
 import { Load } from './../actions/paginaPrincipal';
 import { Link, withRouter } from 'react-router-dom';
+import Cabecalho from '../componentes/cabecalhoBase';
 
 const mapDispatchToProps = () => {
     return{
@@ -75,22 +76,10 @@ class BoxJogo extends React.Component{
     }
 
     async adicionarAoUsuario(){
-        let dado = {
-            id_usuario: this.props.id_usuario,
-            id_jogo: this.props.jogo.id
-        }
-        const cabecalho = {
-            method: "POST",
-            body: JSON.stringify(dado),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
+        const cabecalho = Cabecalho();
+        cabecalho.body = { id_jogo: this.props.jogo.id};
         let url = 'http://localhost:777/cadastroJogosUsuario';
-        /*fetch(url, cabecalho);
-        this.props.Load();
-        this.setState({favorito: !this.state.favorito});*/
-        console.log('cadastrou')
+
         fetch(url, cabecalho)
         if(!this.props.frontReload){
             this.props.Load()
@@ -102,7 +91,6 @@ class BoxJogo extends React.Component{
         this.setState({favorito: !this.state.favorito})
     }
     jogoSelecionado(){
-        console.log(this.props.jogo)
         this.props.SelecionarJogo(this.props.jogo)
         scrollToTop()
     }

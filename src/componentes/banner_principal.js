@@ -15,15 +15,15 @@ class Banner extends React.Component{
     render(){
         const sanitizador = dompurify.sanitize;
         return( this.props.jogo ?
-            <div className="container-fluid px-0 text-light">
+            <div className="container-fluid px-0 text-light banner-main-box">
                 <div className=" banner-main-info">
                     <div className="banner-main-content">
                         <h1>{this.props.jogo.name}</h1>
                         <div className="banner-main-text">
                             <div dangerouslySetInnerHTML={{__html: sanitizador(this.props.jogo.description)}}></div>
                         </div>
-                        <div className="mt-4">
-                            <button className="btn btn-lg px-4 mr-2 banner-botao-jogar">Jogar</button><Link to='/jogo' as={Link} onClick={() => this.props.SelecionarJogo(this.props.jogo)} className="btn btn-lg px-4 banner-botao-info">Mais informações</Link>
+                        <div className="mt-4 banner-main-btn-box">
+                            <Link to='/jogo' as={Link} onClick={() => this.props.SelecionarJogo(this.props.jogo)} className="btn px-4 banner-botao-info z-1">Mais informações</Link>
                         </div>
                     </div>
                 </div>

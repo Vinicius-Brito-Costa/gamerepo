@@ -1,7 +1,11 @@
-export const MudarIdUsuario = (valor) => {
+export const Logar = () => {
     return {
-        type: 'ID_USUARIO',
-        payload: valor
+        type: 'LOGAR'
+    }
+}
+export const Deslogar = () =>{
+    return {
+        type: 'DESLOGAR'
     }
 }
 export const AtualizarListaJogos = (valor) => {

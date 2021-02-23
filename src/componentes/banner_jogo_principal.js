@@ -2,8 +2,8 @@ import React from 'react';
 export default class Banner extends React.Component{
     render(){
         return(
-            <div className="container-fluid px-0 text-light">
-                <div className=" pagina-jogo-main-info">
+            <div className="container-fluid px-0 text-light pagina-jogo-box">
+                <div className="pagina-jogo-main-info">
                     <div className="pagina-jogo-titulo">
                         <h1>{this.props.jogo.name}</h1>
                     </div>
