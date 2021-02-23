@@ -1,8 +1,8 @@
 # Gameflix
 
-![alt text](github.gif "Logo Title Text 1")
+![alt text](github.gif "Preview")
 
-## Link da aplicação: [game-flix.netlify.app](https://game-flix.netlify.app/)
+## Link da aplicação: [clique aqui](https://game-flix.netlify.app/)
 
 
 # Getting Started with Create React App
