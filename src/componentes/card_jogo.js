@@ -1,21 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SelecionarJogo, RemoverJogos } from './../actions/usuario';
+import { SelecionarJogo } from './../actions/usuario';
 import { scrollToTop } from './../javascript/funcoes';
-import { Load } from './../actions/paginaPrincipal';
 import { Link, withRouter } from 'react-router-dom';
-import Cabecalho from '../componentes/cabecalhoBase';
 
 const mapDispatchToProps = () => {
     return{
         SelecionarJogo,
-        Load,
-        RemoverJogos
     }
 }
 const estados = (state) => {
     return{
-        jogosDoUsuario: state.listJogosUsuario,
         frontReload: state.frontReload
     }
 }
@@ -32,8 +27,6 @@ class BoxJogo extends React.Component{
             faixa: 'L',
             cor_faixa: 'faixa_livre'
         }
-        this.adicionarAoUsuario = this.adicionarAoUsuario.bind(this);
-        this.removerDoUsuario = this.removerDoUsuario.bind(this);
         this.jogoSelecionado = this.jogoSelecionado.bind(this);
     }
     componentDidMount(){
@@ -73,22 +66,6 @@ class BoxJogo extends React.Component{
             this.setState({idade: 'L'});
             this.setState({cor_faixa: 'faixa_livre px-3'});
         }
-    }
-
-    async adicionarAoUsuario(){
-        const cabecalho = Cabecalho();
-        cabecalho.body = { id_jogo: this.props.jogo.id};
-        let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
-
-        fetch(url, cabecalho)
-        if(!this.props.frontReload){
-            this.props.Load()
-        }
-        this.setState({favorito: !this.state.favorito})
-    }
-    async removerDoUsuario(){
-        this.props.RemoverJogos(this.props.jogo.id)
-        this.setState({favorito: !this.state.favorito})
     }
     jogoSelecionado(){
         this.props.SelecionarJogo(this.props.jogo)

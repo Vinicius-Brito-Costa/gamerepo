@@ -5,23 +5,15 @@ import dompurify from 'dompurify';
 import { connect } from 'react-redux';
 import { scrollToTop } from './../javascript/funcoes';
 import ListaDevs from './../componentes/lista_devs';
-import { SelecionarJogo, AdicionarJogos, RemoverJogos } from './../actions/usuario';
+import { SelecionarJogo } from './../actions/usuario';
 import { Load } from './../actions/paginaPrincipal';
 import ListaJogos from '../componentes/lista_jogos';
-let token = 'none'
-if (document.cookie.split(';').some((item) => item.trim().startsWith('token='))) {
-    token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
-}
-else if(document.cookie.split('token=')){
-    token = document.cookie.split('token=')[1];
-}
+
 
 const mapDispatchToProps = () => {
     return{
         SelecionarJogo,
-        Load,
-        AdicionarJogos,
-        RemoverJogos
+        Load
     }
 }
 const estados = (states) => {
@@ -43,14 +35,10 @@ class PaginaJogo extends React.Component{
             screenshots: [],
             favorito: false
         }
-        this.checarFavorito = this.checarFavorito.bind(this);
-        this.adicionarAoUsuario = this.adicionarAoUsuario.bind(this);
-        this.removerDoUsuario = this.removerDoUsuario.bind(this);
     }
     async componentDidMount(){
         this._estaMontado = true;
         if(this._estaMontado){
-            this.checarFavorito();
             scrollToTop();
             let jogo = this.props._jogoSelecionado;
             jogo['description'] = await pegarParametro(jogo.id, 'description')
@@ -63,13 +51,11 @@ class PaginaJogo extends React.Component{
             let sugeridos = await jogosSugeridos(jogo.id);
             let sugeridosSemRepetidos = mesmaSerie.concat(sugeridos);
             sugeridosSemRepetidos = [...new Set([...mesmaSerie, ...sugeridos])];
-            console.log(sugeridosSemRepetidos)
             this.setState({jogosParecidos: sugeridosSemRepetidos});
         }
     }
     async componentDidUpdate(prevProps){
         if(this.props._jogoSelecionado !== prevProps._jogoSelecionado){
-            this.checarFavorito();
             let jogo = this.props._jogoSelecionado;
             jogo['description'] = await pegarParametro(jogo.id, 'description')
             this.setState({jogoSelecionado: jogo})
@@ -81,78 +67,17 @@ class PaginaJogo extends React.Component{
             let sugeridos = await jogosSugeridos(jogo.id);
             let sugeridosSemRepetidos = mesmaSerie.concat(sugeridos);
             sugeridosSemRepetidos = [...new Set([...mesmaSerie, ...sugeridos])];
-            console.log(sugeridosSemRepetidos)
             this.setState({jogosParecidos: sugeridosSemRepetidos});
         }
     }
     componentWillUnmount(){
         this._estaMontado = false;
     }
-    checarFavorito(){
-        let jogos = this.props.jogosDoUsuario;
-        for(let i = 0; i < jogos.length; i++){
-            if(jogos[i].id === this.props._jogoSelecionado.id){
-                this.setState({favorito: true});
-                break
-            }
-            else{
-                this.setState({favorito: false});
-            }
-        }
-    }
-    async adicionarAoUsuario(){
-        let dado = {
-            id_jogo: this.props._jogoSelecionado.id
-        }
-        const cabecalho = {
-            method: "POST",
-            body: JSON.stringify(dado),
-            headers: {
-                "token": token,
-                'Content-Type': 'application/json'
-            }
-        };
-        let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
-        fetch(url, cabecalho)
-        setTimeout(() => console.log('intervalo'), 500)
-        if(!this.props.frontReload){
-            this.props.Load()
-        }
-        this.setState({favorito: !this.state.favorito})
-        window.location.href = '/minhaLista';
-        window.location.reload()
-    }
-    async removerDoUsuario(){
-        let dado = {
-            id_usuario: this.props.id_usuario,
-            id_jogo: this.props._jogoSelecionado.id
-        }
-        const cabecalho = {
-            method: "POST",
-            body: JSON.stringify(dado),
-            headers: {
-                "token": token,
-                'Content-Type': 'application/json'
-            }
-        };
-        let url = 'https://rest-api-gameflix.herokuapp.com/removerJogoUsuario';
-        console.log('removeu')
-        setTimeout(() => console.log('intervalo'), 500)
-        fetch(url, cabecalho)
-        if(!this.props.frontReload){
-            this.props.Load()
-        }
-        this.setState({favorito: !this.state.favorito})
-        window.location.reload()
-        window.location.href = '/minhaLista';
-    }
+
     render(){
         const sanitizador = dompurify.sanitize;
         return(
             <main className="w-100 px-0 text-light paginas-cadastro-jogos">
-            {this.state.favorito ? 
-                <div className='pagina-jogo-remover' onClick={this.removerDoUsuario} ><div><h1>x</h1>REMOVER</div></div>
-            : <div className='pagina-jogo-favorito' onClick={this.adicionarAoUsuario} ><div><h1>+</h1>ADICIONAR</div></div>}
                 <BannerPrincipal jogo={this.props._jogoSelecionado}></BannerPrincipal>
                 
                 <div className='pagina-jogo-conteudo'>

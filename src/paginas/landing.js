@@ -11,7 +11,6 @@ class LandingPage extends Component{
                 <main className='landing-page-main'>
                     <div className='landing-page-text-box'>
                         <h1 className='landing-page-headline'>Descubra mais de 500.000 jogos.</h1>
-                        <div className="d-block"><a href='/cadastro' className='landing-page-sub'><span>Cadastre-se!</span></a></div>
                     </div>
                 </main>
             </>

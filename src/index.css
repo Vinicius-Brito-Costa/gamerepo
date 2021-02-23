@@ -345,14 +345,14 @@ main {
 .landing-page-text-box{
     position: absolute;
     width: 80%;
-    top: 70%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 .landing-page-headline{
     color: white;
     text-align: center;
-    font-size: 60px;
+    font-size: 70px;
 }
 .landing-page-sub{
     position: relative;
@@ -1007,178 +1007,6 @@ main {
     margin: auto;
     margin-top: 80px;
     max-width: 90%;
-}
-/*LOGIN*/
-.pagina-login-background{
-    background-image: url('./imagens/bgLogin.png');
-    background-size: cover;
-
-}
-.pagina-login-main{
-    color: white;
-    height: 100vh;
-}
-.pagina-login-formulario-fundo{
-    border: solid 1px rgba(255, 255, 255, 0.075);
-    position: absolute;
-    background: rgba(255, 255, 255, 0.034);
-    backdrop-filter: blur(2px);
-    width: 350px;
-    height: 280px;
-    border-radius: .35rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.pagina-login-input{
-    backdrop-filter: blur(4px);
-    color: white;
-    background-color: rgba(0, 0, 0, 0.493);
-    border: none;
-}
-.pagina-login-formulario{
-    width: 90%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.pagina-login-btn-entrar{
-    font-weight: bold;
-    margin-top: 10px;
-    width: 100%;
-    color: white;
-    background-color: #0070E0;
-}
-.pagina-login-btn-entrar:hover{
-    color: white;
-    background-color: #1A7CFA;
-}
-.pagina-login-btn-cadastrar{
-    font-weight: bold;
-    margin-top: 10px;
-    width: 100%;
-    color: white;
-    background-color: #e03f00;
-}
-.pagina-login-btn-cadastrar:hover{
-    color: white;
-    background-color: #fa6c1a;
-}
-.pagina-login-fade {
-    z-index: 2;
-    width: 100%;
-    height: 100px;
-    background: linear-gradient(0deg, rgba(41, 41, 41, 1) 43%, rgba(41, 41, 41, 0.9475140397956058) 30%, rgba(41, 41, 41, 0) 100%);
-    position: absolute;
-    top: 90vh;
-    left: 0;
-}
-.pagina-login-input-errado{
-    box-shadow: 0 0 0 1px  rgb(255, 35, 35);
-}
-@media screen and (max-width: 380px) {
-    .pagina-login-formulario-fundo{
-        transition: all .5s;
-        border: solid 1px rgba(255, 255, 255, 0.075);
-        position: absolute;
-        background: rgba(255, 255, 255, 0.034);
-        backdrop-filter: blur(2px);
-        width: 90%;
-        height: 300px;
-        border-radius: .35rem;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-}
-/*CADASTRO*/
-.pagina-cadastro-background{
-    background-image: url('./imagens/bgCadastro.png');
-    background-size: cover;
-
-}
-.pagina-cadastro-main{
-    color: white;
-    height: 100vh;
-}
-.pagina-cadastro-formulario-fundo{
-    border: solid 1px rgba(255, 255, 255, 0.075);
-    position: absolute;
-    background: rgba(255, 255, 255, 0.034);
-    backdrop-filter: blur(2px);
-    width: 350px;
-    height: 450px;
-    border-radius: .35rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.pagina-cadastro-input{
-    backdrop-filter: blur(4px);
-    color: white;
-    background-color: rgba(0, 0, 0, 0.493);
-    border: none;
-}
-.pagina-cadastro-formulario{
-    width: 90%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.pagina-cadastro-btn-entrar{
-    font-weight: bold;
-    margin-top: 10px;
-    width: 100%;
-    color: white;
-    background-color: #0070E0;
-}
-.pagina-cadastro-btn-entrar:hover{
-    color: white;
-    background-color: #1A7CFA;
-}
-.pagina-cadastro-btn-cadastrar{
-    font-weight: bold;
-    margin-top: 10px;
-    width: 100%;
-    color: white;
-    background-color: #e03f00;
-}
-.pagina-cadastro-btn-cadastrar:hover{
-    color: white;
-    background-color: #fa6c1a;
-}
-.pagina-cadastro-fade {
-    z-index: 2;
-    width: 100%;
-    height: 100px;
-    background: linear-gradient(0deg, rgba(41, 41, 41, 1) 43%, rgba(41, 41, 41, 0.9475140397956058) 30%, rgba(41, 41, 41, 0) 100%);
-    position: absolute;
-    top: 90vh;
-    left: 0;
-}
-@media screen and (max-width: 380px) {
-    .pagina-cadastro-main{
-        color: white;
-        height: 120vh;
-    }
-    .pagina-cadastro-formulario-fundo{
-        transition: all .5s;
-        border: solid 1px rgba(255, 255, 255, 0.075);
-        position: absolute;
-        background: rgba(255, 255, 255, 0.034);
-        backdrop-filter: blur(2px);
-        width: 90%;
-        height: 470px;
-        border-radius: .35rem;
-        top: 60%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .pagina-cadastro-fade {
-        top: 110vh;
-    }
 }
 /*PLACEHOLDERS*/
 .pagina-sem-jogo img{

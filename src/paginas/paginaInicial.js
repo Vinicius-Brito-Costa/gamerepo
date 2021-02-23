@@ -2,7 +2,6 @@ import React, { lazy, Suspense } from 'react';
 import { consts } from 'react-elastic-carousel';
 import { jogosLancamento, futurosLancamentos, jogosAclamados, pegarParametro } from './../componentes/apiRAWG';
 import { connect } from 'react-redux';
-import { AtualizarListaJogos, ResetRemoverJogos, ResetAdicionarJogos } from './../actions/usuario'
 import { Loaded, Load } from './../actions/paginaPrincipal'
 import Loading from './../componentes/placeholder/loading';
 
@@ -13,11 +12,9 @@ const CardJogo = lazy(() => import('../componentes/card_jogo'));
 
 const mapDispatchToProps = () =>{
     return {
-        AtualizarListaJogos,
         Loaded,
-        Load,
-        ResetRemoverJogos,
-        ResetAdicionarJogos
+        Load
+        
     }
 }
 const estados = (state) => {
