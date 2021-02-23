@@ -34,9 +34,10 @@ class PaginaLogin extends React.Component{
         };
         let url = 'https://rest-api-gameflix.herokuapp.com/login';
         let resultado = await fetch(url, cabecalho);
+        let json = await resultado.json();
         if(!resultado.usuario && !resultado.senha){
-            document.cookie = 'token=' + resultado.token;
-            console.log(resultado)
+            document.cookie = 'token=' + json.token;
+            console.log(json)
             //window.location.href = '/'
         }
         else if(!resultado.usuario){
