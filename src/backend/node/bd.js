@@ -1,18 +1,7 @@
 import mysql from 'mysql2';
-import jwt from 'jsonwebtoken';
 const SECRET = 'endeavor';
 let log = console.log;
 
-
-function verificarJWT(req, res, next){
-    const token = req.headers['x-access-token'];
-    jwt.verify(token, SECRET, (erro, decoded) => {
-        if(erro) return res.status(401).end();
-
-        req.id_usuario = decoded.id_usuario;
-        next();
-    })
-}
 export function conexao(msg = '') {
     const bd = process.env.BD;
     const con = mysql.createConnection({
