@@ -34,8 +34,9 @@ class PaginaLogin extends React.Component{
         };
         let url = '/login';
         let resultado = await fetch(url, cabecalho);
+        let texto = await resultado.text();
         if(!resultado.usuario && !resultado.senha){
-            document.cookie = "token=" + resultado
+            document.cookie = "token=" + texto
             window.location.href = '/'
         }
         else if(!resultado.usuario){
