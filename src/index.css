@@ -360,6 +360,8 @@ main {
     font-weight: bold;
     text-align: center;
     font-size: 40px;
+    display: table;
+    margin: auto;
 }
 .landing-page-sub:hover{
     color: #ffb310;
