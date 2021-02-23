@@ -11,7 +11,7 @@ exp.set('view engine', 'ejs');
 
 exp.use(express.json());
 exp.use(CookieParser());
-
+app.set('trust proxy', 1);
 
 exp.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
