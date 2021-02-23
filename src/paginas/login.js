@@ -36,7 +36,7 @@ class PaginaLogin extends React.Component{
         let resultado = await fetch(url, cabecalho);
         if(!resultado.usuario && !resultado.senha){
             console.log(resultado)
-            window.location.href = '/'
+            //window.location.href = '/'
         }
         else if(!resultado.usuario){
             document.getElementById('usuario').classList.add('pagina-login-input-errado');
