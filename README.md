@@ -1,9 +1,3 @@
-# Gameflix
-
-![alt text](github.gif "Preview")
-
-## Link da aplicação: [clique aqui](https://game-flix.netlify.app/)
-
 
 # Getting Started with Create React App
 
