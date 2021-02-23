@@ -49,7 +49,8 @@ class PaginaLogin extends React.Component{
     async Cadastrar(event){ 
         event.preventDefault();
         this.validarSenha();
-        if(this.state.senhaValida){
+        this.validarUsuario();
+        if(this.state.senhaValida && this.state.usuarioValido){
             const dado = {
                 usuario: this.state.usuario,
                 senha: this.state.senha,
