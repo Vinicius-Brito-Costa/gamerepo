@@ -35,7 +35,7 @@ exp.post('/', verificarJWT, (requisitar, resposta) => {
 exp.post('/login', (requisitar, resposta) => {
     login(requisitar.body, resposta, (id) => {
         const token = jwt.sign({id_usuario: id}, SECRET, {expiresIn: 3000});
-        resposta.cookie('token', token, /*{ httpOnly: true }*/);
+        resposta.cookie('token', token);
         resposta.send(token)
     });
 })
