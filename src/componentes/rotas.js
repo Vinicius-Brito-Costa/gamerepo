@@ -44,7 +44,7 @@ class Rotas extends React.Component{
         this.checkLogado()
     }
     async checkLogado(){
-        let resultado = await fetch('http://localhost:777', Cabecalho());
+        let resultado = await fetch('https://rest-api-gameflix.herokuapp.com', Cabecalho());
         if(resultado.status === 401){
             this.setState({logado: false});
         }

@@ -78,7 +78,7 @@ class BoxJogo extends React.Component{
     async adicionarAoUsuario(){
         const cabecalho = Cabecalho();
         cabecalho.body = { id_jogo: this.props.jogo.id};
-        let url = 'http://localhost:777/cadastroJogosUsuario';
+        let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
 
         fetch(url, cabecalho)
         if(!this.props.frontReload){

@@ -63,7 +63,7 @@ class MinhaLista extends React.Component{
             let recarregado = this.props.reload;
             console.log(recarregado)
             this.props.Loaded();
-            let resultado = await fetch('http://localhost:777', Cabecalho())
+            let resultado = await fetch('https://rest-api-gameflix.herokuapp.com', Cabecalho())
             let json = await resultado.json();
             if(recarregado){
                 console.log('Sim')

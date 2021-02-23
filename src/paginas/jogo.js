@@ -112,7 +112,7 @@ class PaginaJogo extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = 'http://localhost:777/cadastroJogosUsuario';
+        let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
         console.log('cadastrou')
         setTimeout(() => console.log('intervalo'), 500)
         fetch(url, cabecalho)
@@ -136,7 +136,7 @@ class PaginaJogo extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = 'http://localhost:777/removerJogoUsuario';
+        let url = 'https://rest-api-gameflix.herokuapp.com/removerJogoUsuario';
         console.log('removeu')
         setTimeout(() => console.log('intervalo'), 500)
         fetch(url, cabecalho)

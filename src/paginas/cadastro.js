@@ -62,7 +62,7 @@ class PaginaLogin extends React.Component{
                     'Content-Type': 'application/json'
                 }
             };
-            let url = 'http://localhost:777/cadastro';
+            let url = 'https://rest-api-gameflix.herokuapp.com/cadastro';
             let resultado = await fetch(url, cabecalho);
             let json = await resultado.json()
             if(!json.usuario){
