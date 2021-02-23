@@ -28,7 +28,6 @@ class PaginaLogin extends React.Component{
         const cabecalho = {
             method: "POST",
             body: JSON.stringify(dado),
-            credentials: 'https://rest-api-gameflix.herokuapp.com',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -36,6 +35,7 @@ class PaginaLogin extends React.Component{
         let url = 'https://rest-api-gameflix.herokuapp.com/login';
         let resultado = await fetch(url, cabecalho);
         if(!resultado.usuario && !resultado.senha){
+            document.cookie = 'token=' + resultado.token;
             console.log(resultado)
             //window.location.href = '/'
         }
