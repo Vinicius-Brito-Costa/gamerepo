@@ -37,8 +37,7 @@ class PaginaLogin extends React.Component{
         let json = await resultado.json();
         if(!resultado.usuario && !resultado.senha){
             document.cookie = 'token=' + json.token;
-            console.log(json)
-            //window.location.href = '/'
+            window.location.href = '/'
         }
         else if(!resultado.usuario){
             document.getElementById('usuario').classList.add('pagina-login-input-errado');
