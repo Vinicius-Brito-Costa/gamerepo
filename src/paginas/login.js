@@ -32,7 +32,7 @@ class PaginaLogin extends React.Component{
                 'Content-Type': 'application/json'
             }
         };
-        let url = '/login';
+        let url = 'https://rest-api-gameflix.herokuapp.com/login';
         let resultado = await fetch(url, cabecalho);
         if(resultado.usuario && resultado.senha){
             window.location.href = '/'
