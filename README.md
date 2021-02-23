@@ -1,8 +1,15 @@
+# Gameflix
+
+![alt text](github.gif "Logo Title Text 1")
+
+## Link da aplicação: [game-flix.netlify.app](https://game-flix.netlify.app/)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Available Scripts 
 
 In the project directory, you can run:
 
