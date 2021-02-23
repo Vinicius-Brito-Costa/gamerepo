@@ -100,7 +100,7 @@ class PaginaJogo extends React.Component{
             }
         }
     }
-    adicionarAoUsuario(){
+    async adicionarAoUsuario(){
         let dado = {
             id_jogo: this.props._jogoSelecionado.id
         }
@@ -113,13 +113,14 @@ class PaginaJogo extends React.Component{
             }
         };
         let url = 'https://rest-api-gameflix.herokuapp.com/cadastroJogosUsuario';
-        fetch(url, cabecalho);
+        fetch(url, cabecalho)
+        setTimeout(() => console.log('intervalo'), 500)
         if(!this.props.frontReload){
             this.props.Load()
         }
         this.setState({favorito: !this.state.favorito})
-        window.location.reload()
         window.location.href = '/minhaLista';
+        window.location.reload()
     }
     async removerDoUsuario(){
         let dado = {
