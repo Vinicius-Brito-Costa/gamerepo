@@ -18,7 +18,8 @@ exp.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', true);
     next();
 });
-exp.use(cors());
+const origin = 'https://game-flix.netlify.app/'
+exp.use(cors({credentials: true, origin: origin}));
 
 
 function verificarJWT(req, res, next){
